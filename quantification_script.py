@@ -38,7 +38,9 @@ def main():
         simulated_reads_dir+"/sample_01_1.fasta",
         simulated_reads_dir+"/sample_01_2.fasta",
         sailfish_index_dir,
-        sailfish_output_dir
+        sailfish_output_dir,
+        transcriptome_reference_file,
+        sailfish_index_dir
         )
 
 
