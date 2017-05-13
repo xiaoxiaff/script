@@ -1,0 +1,21 @@
+transcriptid	foldchange.1	foldchange.2	DEstatus.1	DEstatus.2
+gi|424037187|ref|NR_073460.1| Homo sapiens ribosome biogenesis protein BMS1 homolog pseudogene (LOC101101776), non-coding RNA	1	1	FALSE	FALSE
+gi|424037186|ref|NR_073459.1| Homo sapiens long intergenic non-protein coding RNA 516 (LINC00516), non-coding RNA	1	1	FALSE	FALSE
+gi|209977002|ref|NM_001136213.1| Homo sapiens POTE ankyrin domain family, member H (POTEH), mRNA	1	1	FALSE	FALSE
+gi|52546690|ref|NM_001005239.1| Homo sapiens olfactory receptor, family 11, subfamily H, member 1 (OR11H1), mRNA	1	1	FALSE	FALSE
+gi|51093856|ref|NM_014406.4| Homo sapiens chaperonin containing TCP1, subunit 8 (theta)-like 2 (CCT8L2), mRNA	1	1	FALSE	FALSE
+gi|40445391|ref|NR_001591.1| Homo sapiens transmembrane phosphatase with tensin homology pseudogene 1 (TPTEP1), non-coding RNA	1	1	FALSE	FALSE
+gi|338970360|ref|NR_040115.1| Homo sapiens ANKRD62P1-PARP4P3 readthrough, transcribed pseudogene (ANKRD62P1-PARP4P3), non-coding RNA	1	1	FALSE	FALSE
+gi|103471990|ref|NM_175878.3| Homo sapiens XK, Kell blood group complex subunit-related family, member 3 (XKR3), mRNA	1	1	FALSE	FALSE
+gi|151301122|ref|NR_003607.1| Homo sapiens heat shock transcription factor, Y-linked 1 pseudogene 1 (HSFY1P1), non-coding RNA	1	1	FALSE	FALSE
+gi|83716020|ref|NM_001037814.1| Homo sapiens GRB2-associated binding protein family, member 4 (GAB4), mRNA	1	1	FALSE	FALSE
+gi|168229201|ref|NR_015352.1| Homo sapiens cat eye syndrome chromosome region, candidate 7 (non-protein coding) (CECR7), non-coding RNA	1	1	FALSE	FALSE
+gi|411147377|ref|NM_014339.6| Homo sapiens interleukin 17 receptor A (IL17RA), mRNA	1	1	FALSE	FALSE
+gi|251823729|ref|NM_001163079.1| Homo sapiens cat eye syndrome chromosome region, candidate 6 (CECR6), transcript variant 2, mRNA	1	1	FALSE	FALSE
+gi|251823728|ref|NM_031890.3| Homo sapiens cat eye syndrome chromosome region, candidate 6 (CECR6), transcript variant 1, mRNA	1	1	FALSE	FALSE
+gi|51093854|ref|NM_017829.5| Homo sapiens cat eye syndrome chromosome region, candidate 5 (CECR5), transcript variant 1, mRNA	1	1	FALSE	FALSE
+gi|51093855|ref|NM_033070.2| Homo sapiens cat eye syndrome chromosome region, candidate 5 (CECR5), transcript variant 2, mRNA	1	1	FALSE	FALSE
+gi|213512664|ref|NR_024483.1| Homo sapiens CECR5 antisense RNA 1 (CECR5-AS1), transcript variant 1, non-coding RNA	1	1	FALSE	FALSE
+gi|213512645|ref|NR_024482.1| Homo sapiens CECR5 antisense RNA 1 (CECR5-AS1), transcript variant 2, non-coding RNA	1	1	FALSE	FALSE
+gi|29029551|ref|NM_177405.1| Homo sapiens cat eye syndrome chromosome region, candidate 1 (CECR1), transcript variant 2, mRNA	1	1	FALSE	FALSE
+gi|29029549|ref|NM_017424.2| Homo sapiens cat eye syndrome chromosome region, candidate 1 (CECR1), transcript variant 1, mRNA	1	1	FALSE	FALSE
