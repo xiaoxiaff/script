@@ -1,5 +1,3 @@
-import subprocess as sub
-import re
 import salmon_utils as salmon
 import sailfish_utils as sailfish
 
@@ -22,7 +20,8 @@ sailfish_output_dir = "/home/ubuntu/cs229/sailfish/output"
 def main():
     print("Building salmon index...")
     salmon.build_index(transcriptome_reference_file, salmon_index_dir)
-    
+
+
     print("Quant with salmon, k=31...")
     salmon.quant_with_k(
         31,
@@ -31,8 +30,9 @@ def main():
         salmon_index_dir,
         salmon_output_dir
         )
-    print("Quant with sailfish, k=31...")
 
+
+    print("Quant with sailfish, k=31...")
     sailfish.quant_with_k(
         31,
         simulated_reads_dir+"/sample_01_1.fasta",
@@ -40,6 +40,7 @@ def main():
         sailfish_index_dir,
         sailfish_output_dir
         )
+
 
 if __name__ == "__main__":
     main()
