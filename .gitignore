@@ -1,3 +1,7 @@
+#OS junk files
+*.DS_Store
+*~
+
 # kallisto test results files
-kallisto_tests
-RNASkim_tests
+kallisto
+RNASkim
