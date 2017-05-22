@@ -1,6 +1,14 @@
 #OS junk files
 *~
+.DS_Store
+*.pyc
+
+#simulation reads
+
+simulated_reads
 
 # kallisto test results files
 kallisto
 RNASkim
+salmon
+sailfish

@@ -1,24 +1,62 @@
+#!/usr/bin/env Rscript
 library(polyester)
 library(Biostrings)
 
-outdir = '/Users/liyuanqi/Google\ Drive/UCLA_MSCS/Quarter3/CS229S/Project/simulated_reads'
+args = commandArgs(trailingOnly=TRUE)
+
+if (length(args)<5) {
+  stop("Usage: Rscript --vanilla [script location] [number_of_transcripts] [readlen] [error_rate] [coverage] [output_dir]", call.=FALSE)
+}
+
+# args = c("10","100","0.001","20","/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project")
+
+################# input parameters ############################
+
+number_of_samples = 10
+
+# max = 918
+number_of_transcripts = as.numeric(args[1])
+
+# default = 100
+readlen = as.numeric(args[2])
+
+# between 0~1
+error_rate = as.numeric(args[3])
+
+coverage = as.numeric(args[4])
+
+# '/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project'
+outdir = args[5]
+
+print(number_of_samples)
+print(number_of_transcripts)
+print(readlen)
+print(error_rate)
+print(outdir)
+
+###############################################################
 
 # FASTA annotation
 fasta_file = system.file('extdata', 'chr22.fa', package='polyester')
 fasta = readDNAStringSet(fasta_file)
 
+# subset the FASTA file to first [number_of_transcripts] transcripts
+small_fasta = fasta[1:number_of_transcripts]
+small_fasta_file_location = paste(outdir, "/chr22_small.fa", sep="")
+writeXStringSet(small_fasta, small_fasta_file_location)
 
-# subset the FASTA file to first 20 transcripts
-small_fasta = fasta[1:20]
-writeXStringSet(small_fasta, 'chr22_small.fa')
-
-# ~20x coverage ----> reads per transcript = transcriptlength/readlength * 20
+# coverage ----> reads per transcript = transcriptlength/readlength * coverage
 # here all transcripts will have ~equal FPKM
-# readspertx = round(20 * width(small_fasta) / 100)
-readspertx = round(20 * width(small_fasta) / 100)
+readspertx = round(coverage * width(small_fasta) / 100)
 
-fold_changes = matrix(c(rep(1,20),rep(1,20)), nrow=20)
+fold_changes = matrix(c(rep(1,number_of_transcripts),rep(1,number_of_transcripts)), nrow=number_of_transcripts)
 
 # simulation call:
-simulate_experiment('chr22_small.fa', reads_per_transcript=readspertx, 
-                    num_reps=c(10,10), fold_changes=fold_changes, outdir=outdir, paired=TRUE) 
+simulate_experiment(small_fasta_file_location,
+                    reads_per_transcript=readspertx,
+                    readlen=readlen,
+                    num_reps=c(number_of_samples/2,number_of_samples/2),
+                    fold_changes=fold_changes,
+                    outdir=paste(outdir,"/simulated_reads",sep=""),
+                    paired=TRUE,
+                    seed=7) 

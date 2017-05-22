@@ -14,7 +14,6 @@ def check_command_output(output, command_string):
 
 def execute_command(command_string, verbose):
     command_args = command_string.split()
-    print(command_args)
     if(verbose):
         print("\nExecuting command:")
         print(command_string + "\n\n")
@@ -23,3 +22,21 @@ def execute_command(command_string, verbose):
 	    FNULL = open(os.devnull, 'w')
 	    sub.check_call(command_args, stdout=FNULL, stderr=sub.STDOUT)
 
+
+def simulate_reads(
+    script_path, 
+    number_of_transcripts, 
+    readlen, 
+    error_rate, 
+    coverage, 
+    output_dir):
+    
+    command = "Rscript --vanilla " \
+        + script_path + " " \
+        + str(number_of_transcripts) + " " \
+        + str(readlen) + " " \
+        + str(error_rate) + " " \
+        + str(coverage) + " " \
+        + str(output_dir) + " " \
+
+    execute_command(command, True)

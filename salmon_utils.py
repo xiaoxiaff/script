@@ -33,7 +33,11 @@ def get_result_matrix(result_dir):
         names = True,
         dtype=None,
         delimiter="\t")
+    # matrix[matrix[:,1].argsort()]
+    # matrix.sort(axis='')
     print matrix.dtype.names
     print matrix
+
+
 
 # get_result_matrix('/Users/liyuanqi/Google Drive/UCLA_MSCS/Quarter3/CS229S/Project/salmon/output')
