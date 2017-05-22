@@ -33,6 +33,7 @@ def get_result_dict(result_dir):
         names = True,
         dtype=None,
         delimiter="\t")
+<<<<<<< HEAD
     
     # print(matrix.dtype.names)
 
@@ -87,3 +88,13 @@ run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads",
 # get_result_matrix("test_results/salmon")
 
 
+=======
+    # matrix[matrix[:,1].argsort()]
+    # matrix.sort(axis='')
+    print matrix.dtype.names
+    print matrix
+
+
+
+# get_result_matrix('/Users/liyuanqi/Google Drive/UCLA_MSCS/Quarter3/CS229S/Project/salmon/output')
+>>>>>>> 170926fefb5d6e86e567c807d1fca65047e757b1
