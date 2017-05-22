@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from general_utils import simulate_reads
@@ -7,7 +9,7 @@ import sailfish_utils as sailfish
 import kallisto_utils as kallisto
 
 
-OS = "mac"
+OS = "ubuntu"
 
 if(OS=="ubuntu"):
     project_dir = "/home/ubuntu/cs229"
