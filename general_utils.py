@@ -60,7 +60,7 @@ def simulate_reads(
     return ground_truth_map
 
 
-def get_average_percentage_error(ground_truth_map, quantificatoin_map):
+def get_average_accuracy(ground_truth_map, quantificatoin_map):
     # print(ground_truth_map)
     # print(quantificatoin_map)
 
@@ -71,7 +71,7 @@ def get_average_percentage_error(ground_truth_map, quantificatoin_map):
         error = abs(float(quantification_value) - float(ground_truth_value))/float(ground_truth_value)
         errors.append(error)
 
-    return np.mean(errors)
+    return 1-np.mean(errors)
 
 
 
