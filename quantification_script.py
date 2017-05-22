@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from general_utils import simulate_reads
 from general_utils import get_average_percentage_error
 import salmon_utils as salmon
@@ -27,6 +28,14 @@ salmon_output_dir = project_dir + "/salmon/output"
 sailfish_index_dir = project_dir + "/sailfish/index"
 sailfish_output_dir = project_dir + "/sailfish/output"
 
+def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
+    
+    # salmon
+    salmon_quantificatoin_map = salmon.run_salmon(k, transcriptome_reference_file, salmon_index_dir, simulated_reads_dir, salmon_output_dir)
+    salmon_error = get_average_percentage_error(ground_truth_map, salmon_quantificatoin_map)
+    print(salmon_error)
+    plt.plot([1,2,3,4], [1,4,9,16], 'ro')
+
 
 def main():
     number_of_transcripts = 10
@@ -36,38 +45,23 @@ def main():
     output_dir = project_dir
 
     ground_truth_map = simulate_reads(
-        simulation_script_path, 
-        number_of_transcripts, 
-        readlen, 
-        error_rate, 
-        coverage, 
+        simulation_script_path,
+        number_of_transcripts,
+        readlen,
+        error_rate,
+        coverage,
         output_dir)
-    
-    # print("Building salmon index...")
-    # salmon.build_index(transcriptome_reference_file, salmon_index_dir)
 
-    # print("Quant with salmon, k=31...")
-    # salmon.quant_with_k(
-    #     31,
-    #     simulated_reads_dir+"/sample_01_1.fasta",
-    #     simulated_reads_dir+"/sample_01_2.fasta",
-    #     salmon_index_dir,
-    #     salmon_output_dir
-    #     )
-    salmon_quantificatoin_map = salmon.run_salmon(31, transcriptome_reference_file, salmon_index_dir, simulated_reads_dir, salmon_output_dir)
+    sailfish.quant_with_k(31, 
+        simulated_reads_dir + "/sample_01_1.fasta",
+        simulated_reads_dir + "/sample_01_2.fasta",
+        sailfish_index_dir,
+        sailfish_output_dir,
+        transcriptome_reference_file)
 
-    error = get_average_percentage_error(ground_truth_map, salmon_quantificatoin_map)
-    print(error)
-    # print("Quant with sailfish, k=31...")
-    # sailfish.quant_with_k(
-    #     31,
-    #     simulated_reads_dir+"/sample_01_1.fasta",
-    #     simulated_reads_dir+"/sample_01_2.fasta",
-    #     sailfish_index_dir,
-    #     sailfish_output_dir,
-    #     transcriptome_reference_file,
-    #     sailfish_index_dir
-    #     )
+    k_range = xrange(30,32,1)
+    # for k in k_range:
+    #     run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
 
 
 if __name__ == "__main__":
