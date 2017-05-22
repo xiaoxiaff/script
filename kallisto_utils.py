@@ -25,5 +25,7 @@ def quant(index_dir, output_dir, sample_pair1, sample_pair2):
 
 	execute_command(command, True)
 
-# build_index_with_k("chr22_small.fa", 29, "index2")
-# quant("index2", "output2", "simulated_reads/sample_01_1.fasta", "simulated_reads/sample_01_2.fasta")
+
+
+build_index_with_k("chr22_small.fa", 29, "kallisto/index2")
+quant("kallisto/index2", "kallisto/output2", "simulated_reads/sample_01_1.fasta", "simulated_reads/sample_01_2.fasta")

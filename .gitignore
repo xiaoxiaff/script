@@ -1,6 +1,11 @@
 #OS junk files
+*.DS_Store
 *~
+
+*.pyc
 
 # kallisto test results files
 kallisto
 RNASkim
+
+*.fa

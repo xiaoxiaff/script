@@ -77,6 +77,8 @@ def estimate(count_file, estimation_file):
 
 
 
+# cluster("chr22_first4.fa", "RNASkim/src/test_results/clustered.fa", 60, 4)
+# cluster("RNASkim/data/homo_sapiens/current/genes.fa", "RNASkim/src/test_results/clustered.fa", 60, 4)
 # cluster("RNASkim/src/test_data/gene_fasta_example.fa", "RNASkim/src/test_results/clustered.fa", 60, 4)
 # build_index("RNASkim/src/test_results/clustered.fa", "RNASkim/src/test_results/clustered_gene.fa.pb", 60, 4)
 # select_with_k("RNASkim/src/test_results/clustered_gene.fa.pb", "RNASkim/src/test_results/clustered_gene.fa.sk", 60)
