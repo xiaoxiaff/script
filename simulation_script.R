@@ -8,7 +8,7 @@ if (length(args)<5) {
   stop("Usage: Rscript --vanilla [script location] [number_of_transcripts] [readlen] [error_rate] [coverage] [output_dir]", call.=FALSE)
 }
 
-# args = c("10","100","0.001","20","/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project")
+args = c("10","100","0.001","20","/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project")
 
 ################# input parameters ############################
 
@@ -43,7 +43,7 @@ fasta = readDNAStringSet(fasta_file)
 # subset the FASTA file to first [number_of_transcripts] transcripts
 small_fasta = fasta[1:number_of_transcripts]
 small_fasta_file_location = paste(outdir, "/chr22_small.fa", sep="")
-writeXStringSet(small_fasta, small_fasta_file_location)
+writeXStringSet(small_fasta, small_fasta_file_location, width=10000)
 
 names = names(small_fasta)
 
