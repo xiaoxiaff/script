@@ -1,4 +1,5 @@
 from general_utils import execute_command
+import numpy as np
 # https://pachterlab.github.io/kallisto/manual
 
 # k: default and maximum k is 31, must be odd
@@ -26,6 +27,53 @@ def quant(index_dir, output_dir, sample_pair1, sample_pair2):
 	execute_command(command, True)
 
 
+def get_result_dict(result_dir):       
+    matrix = np.genfromtxt(
+        result_dir + '/abundance.tsv',
+        names = True,
+        dtype=None,
+        delimiter="\t")
 
-build_index_with_k("chr22_small.fa", 29, "kallisto/index2")
-quant("kallisto/index2", "kallisto/output2", "simulated_reads/sample_01_1.fasta", "simulated_reads/sample_01_2.fasta")
+    transcripts = matrix['target_id']
+    num_reads = matrix['est_counts']
+    res = dict()
+
+    for i in range(0, len(transcripts)):
+        res[transcripts[i]] = num_reads[i]
+
+    return res
+
+
+def run_kallisto(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
+    build_index_with_k(transcriptome_reference_file, k, index_output_dir)
+
+    res_dict = dict()
+    for i in range(1, 11):
+        if i < 10:
+            sample_pair1 = sample_dir + '/sample_0' + str(i)+ '_1.fasta'
+            sample_pair2 = sample_dir + '/sample_0' + str(i) + '_2.fasta'
+        else:
+            sample_pair1 = sample_dir + '/sample_' + str(i)+ '_1.fasta'
+            sample_pair2 = sample_dir + '/sample_' + str(i) + '_2.fasta'
+
+        result_output_dir = output_dir + '/sample' + str(i) + '_result'
+        quant(index_output_dir, result_output_dir, sample_pair1, sample_pair2)
+        sample_dict = get_result_dict(result_output_dir)
+
+        for key in sample_dict:
+            if i == 1:
+                res_dict[key] = sample_dict[key]
+            else:
+                res_dict[key] += sample_dict[key]
+
+    for key in res_dict:
+        res_dict[key] /= 10
+
+    print(res_dict)
+  
+    return res_dict
+
+
+run_kallisto(31, "chr22_small.fa", "test_results/kallisto/index", "simulated_reads", "test_results/kallisto/quant_results")
+
+
