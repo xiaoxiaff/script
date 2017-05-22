@@ -45,9 +45,14 @@ small_fasta = fasta[1:number_of_transcripts]
 small_fasta_file_location = paste(outdir, "/chr22_small.fa", sep="")
 writeXStringSet(small_fasta, small_fasta_file_location)
 
+names = names(small_fasta)
+
+lapply(names, write, paste(outdir,"/transcript_names.txt",sep=""), append=TRUE)
+
 # coverage ----> reads per transcript = transcriptlength/readlength * coverage
 # here all transcripts will have ~equal FPKM
 readspertx = round(coverage * width(small_fasta) / readlen)
+lapply(readspertx, write, paste(outdir,"/num_of_reads.txt",sep=""), append=TRUE)
 
 fold_changes = matrix(c(rep(1,number_of_transcripts),rep(1,number_of_transcripts)), nrow=number_of_transcripts)
 

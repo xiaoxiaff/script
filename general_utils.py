@@ -2,6 +2,14 @@ import re
 import sys
 import os
 import subprocess as sub
+import numpy as np
+
+
+def remove_file_if_exists(file_path):
+    try:
+        os.remove(file_path)
+    except OSError:
+        pass
 
 
 def check_command_output(output, command_string):
@@ -31,6 +39,9 @@ def simulate_reads(
     coverage, 
     output_dir):
     
+    remove_file_if_exists(output_dir + '/transcript_names.txt')
+    remove_file_if_exists(output_dir + '/num_of_reads.txt')
+
     command = "Rscript --vanilla " \
         + script_path + " " \
         + str(number_of_transcripts) + " " \
@@ -40,3 +51,18 @@ def simulate_reads(
         + str(output_dir) + " " \
 
     execute_command(command, True)
+
+    transcript_names = np.genfromtxt(
+        output_dir + '/transcript_names.txt',
+        names = None,
+        dtype= None,
+        usecols = (0))
+    num_of_reads = np.genfromtxt(
+        output_dir + '/num_of_reads.txt',
+        names = None,
+        dtype= None,
+        usecols = (0))
+
+    ground_truth_map = dict(zip(transcript_names, num_of_reads))
+
+    return ground_truth_map

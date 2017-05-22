@@ -1,5 +1,5 @@
 from general_utils import simulate_reads
-import salmon_utils as salmon
+# import salmon_utils as salmon
 import sailfish_utils as sailfish
 
 
@@ -28,14 +28,13 @@ sailfish_output_dir = project_dir + "/sailfish/output"
 
 
 def main():
-    simulation_script_path = project_dir + "/simulation_script.R"
     number_of_transcripts = 10
     readlen = 100
     error_rate = 0.001
     coverage = 20
     output_dir = project_dir
 
-    simulate_reads(
+    ground_truth_map = simulate_reads(
         simulation_script_path, 
         number_of_transcripts, 
         readlen, 
@@ -43,6 +42,7 @@ def main():
         coverage, 
         output_dir)
 
+    print(ground_truth_map)
         # print("Building salmon index...")
     # salmon.build_index(transcriptome_reference_file, salmon_index_dir)
 
