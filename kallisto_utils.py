@@ -68,12 +68,10 @@ def run_kallisto(k, transcriptome_reference_file, index_output_dir, sample_dir, 
 
     for key in res_dict:
         res_dict[key] /= 10
-
-    print(res_dict)
   
     return res_dict
 
 
-run_kallisto(31, "chr22_small.fa", "test_results/kallisto/index", "simulated_reads", "test_results/kallisto/quant_results")
+# run_kallisto(31, "chr22_small.fa", "test_results/kallisto/index", "simulated_reads", "test_results/kallisto/quant_results")
 
 

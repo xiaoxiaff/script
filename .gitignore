@@ -20,3 +20,5 @@ sailfish
 .Rhistory
 num_of_reads.txt
 transcript_names.txt
+
+*.png
