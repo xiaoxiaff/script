@@ -47,7 +47,7 @@ def get_result_dict(result_dir):
 
 
 def run_salmon(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
-    # build_index(transcriptome_reference_file, index_output_dir)
+    build_index(transcriptome_reference_file, index_output_dir)
 
     res_dict = dict()
     for i in range(1, 11):
@@ -59,7 +59,7 @@ def run_salmon(k, transcriptome_reference_file, index_output_dir, sample_dir, ou
             sample_pair2 = sample_dir + '/sample_' + str(i) + '_2.fasta'
 
         result_output_dir = output_dir + '/sample' + str(i) + '_result'
-        # quant_with_k(k, sample_pair1, sample_pair2, index_output_dir, result_output_dir)
+        quant_with_k(k, sample_pair1, sample_pair2, index_output_dir, result_output_dir)
         sample_dict = get_result_dict(result_output_dir)
 
         for key in sample_dict:
@@ -70,13 +70,11 @@ def run_salmon(k, transcriptome_reference_file, index_output_dir, sample_dir, ou
 
     for key in res_dict:
         res_dict[key] /= 10
-
-    print(res_dict)
-  
+          
     return res_dict
 
 
-run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads", "test_results/salmon/quant_results")
+# run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads", "test_results/salmon/quant_results")
 
 
 # build_index("chr22_small.fa", "test_results/salmon")

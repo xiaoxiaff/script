@@ -3,6 +3,7 @@ import sys
 import os
 import subprocess as sub
 import numpy as np
+from sklearn.metrics import average_precision_score
 
 
 def remove_file_if_exists(file_path):
@@ -66,3 +67,27 @@ def simulate_reads(
     ground_truth_map = dict(zip(transcript_names, num_of_reads))
 
     return ground_truth_map
+
+
+def get_average_percentage_error(ground_truth_map, quantificatoin_map):
+    # print(ground_truth_map)
+    # print(quantificatoin_map)
+
+    errors = []
+
+    for (key,ground_truth_value) in ground_truth_map.items():
+        quantification_value = quantificatoin_map[key]
+        error = abs(float(quantification_value) - float(ground_truth_value))/float(ground_truth_value)
+        errors.append(error)
+
+    return np.mean(errors)
+
+
+
+
+
+
+
+
+
+

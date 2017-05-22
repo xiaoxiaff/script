@@ -1,5 +1,6 @@
 from general_utils import simulate_reads
-# import salmon_utils as salmon
+from general_utils import get_average_percentage_error
+import salmon_utils as salmon
 import sailfish_utils as sailfish
 
 
@@ -41,11 +42,9 @@ def main():
         error_rate, 
         coverage, 
         output_dir)
-
-    print(ground_truth_map)
-        # print("Building salmon index...")
+    
+    # print("Building salmon index...")
     # salmon.build_index(transcriptome_reference_file, salmon_index_dir)
-
 
     # print("Quant with salmon, k=31...")
     # salmon.quant_with_k(
@@ -55,8 +54,10 @@ def main():
     #     salmon_index_dir,
     #     salmon_output_dir
     #     )
+    salmon_quantificatoin_map = salmon.run_salmon(31, transcriptome_reference_file, salmon_index_dir, simulated_reads_dir, salmon_output_dir)
 
-
+    error = get_average_percentage_error(ground_truth_map, salmon_quantificatoin_map)
+    print(error)
     # print("Quant with sailfish, k=31...")
     # sailfish.quant_with_k(
     #     31,

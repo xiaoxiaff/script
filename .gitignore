@@ -15,7 +15,8 @@ RNASkim
 salmon
 sailfish
 
-
 *.fa
 
-
+.Rhistory
+num_of_reads.txt
+transcript_names.txt
