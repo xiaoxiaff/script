@@ -84,7 +84,7 @@ def plot_result(plot_name, k_range, salmon_errors, kallisto_errors):
     plt.xticks(index + bar_width/2.0, k_range)
     plt.legend()
     plt.tight_layout()
-    print(project_dir + "/" + plot_name)
+    print("*** Plot save to: " + project_dir + "/" + plot_name)
     plt.savefig(project_dir + "/" + plot_name)
 
 

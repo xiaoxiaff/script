@@ -6,8 +6,6 @@
 
 #simulation reads
 
-simulated_reads
-
 *.pyc
 
 kallisto
@@ -22,3 +20,4 @@ num_of_reads.txt
 transcript_names.txt
 
 *.png
+
