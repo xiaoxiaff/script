@@ -47,7 +47,7 @@ writeXStringSet(small_fasta, small_fasta_file_location)
 
 # coverage ----> reads per transcript = transcriptlength/readlength * coverage
 # here all transcripts will have ~equal FPKM
-readspertx = round(coverage * width(small_fasta) / 100)
+readspertx = round(coverage * width(small_fasta) / readlen)
 
 fold_changes = matrix(c(rep(1,number_of_transcripts),rep(1,number_of_transcripts)), nrow=number_of_transcripts)
 
