@@ -7,8 +7,10 @@ OS = "mac"
 
 if(OS=="ubuntu"):
     project_dir = "/home/ubuntu/cs229"
+    simulation_script_path = project_dir + "/CS229S_Project/simulation_script.R"
 else:
     project_dir = "/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project"
+    simulation_script_path = project_dir + "/simulation_script.R"
 
 ####### Universal Settings ###########################
 transcriptome_reference_file = project_dir + "/chr22_small.fa"
@@ -32,7 +34,7 @@ def main():
     error_rate = 0.001
     coverage = 20
     output_dir = project_dir
-    
+
     simulate_reads(
         simulation_script_path, 
         number_of_transcripts, 
