@@ -5,7 +5,7 @@ import salmon_utils as salmon
 import sailfish_utils as sailfish
 
 
-OS = "mac"
+OS = "ubuntu"
 
 if(OS=="ubuntu"):
     project_dir = "/home/ubuntu/cs229"
@@ -59,7 +59,7 @@ def main():
         sailfish_output_dir,
         transcriptome_reference_file)
 
-    k_range = xrange(30,32,1)
+    k_range = range(30,32,1)
     # for k in k_range:
     #     run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
 
