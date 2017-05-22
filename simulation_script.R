@@ -8,7 +8,7 @@ if (length(args)<5) {
   stop("Usage: Rscript --vanilla [script location] [number_of_transcripts] [readlen] [error_rate] [coverage] [output_dir]", call.=FALSE)
 }
 
-args = c("10","100","0.001","20","/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project")
+#args = c("10","100","0.001","20","/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project")
 
 ################# input parameters ############################
 
