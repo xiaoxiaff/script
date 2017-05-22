@@ -33,8 +33,7 @@ def get_result_dict(result_dir):
         names = True,
         dtype=None,
         delimiter="\t")
-<<<<<<< HEAD
-    
+
     # print(matrix.dtype.names)
 
     transcripts = matrix['Name']
@@ -77,9 +76,6 @@ def run_salmon(k, transcriptome_reference_file, index_output_dir, sample_dir, ou
     return res_dict
 
 
-
-
-
 run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads", "test_results/salmon/quant_results")
 
 
@@ -87,14 +83,3 @@ run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads",
 # quant_with_k(31, "simulated_reads/sample_01_1.fasta", "simulated_reads/sample_01_2.fasta", "test_results/salmon", "test_results/salmon")
 # get_result_matrix("test_results/salmon")
 
-
-=======
-    # matrix[matrix[:,1].argsort()]
-    # matrix.sort(axis='')
-    print matrix.dtype.names
-    print matrix
-
-
-
-# get_result_matrix('/Users/liyuanqi/Google Drive/UCLA_MSCS/Quarter3/CS229S/Project/salmon/output')
->>>>>>> 170926fefb5d6e86e567c807d1fca65047e757b1
