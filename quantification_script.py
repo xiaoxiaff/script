@@ -30,8 +30,8 @@ simulated_reads_dir = project_dir + "/simulated_reads"
 
 ################### Settings ############################
 
-k_range = np.arange(11,14,2)
-coverage_range = np.arange(20,50,10)
+k_range = np.arange(29,33,2)
+coverage_range = np.arange(20,30,10)
 error_rate_range = np.arange(0.0,0.1,0.005)
 readlen_range = np.arange(0.0,0.1,0.005)
 
@@ -61,6 +61,9 @@ def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_read
     kallisto_quantificatoin_map = kallisto.run_kallisto(k, transcriptome_reference_file, get_index_dir_by_toolname("kallisto"), simulated_reads_dir, get_output_dir_by_toolname("kallisto"))
     kallisto_error = get_average_percentage_error(ground_truth_map, kallisto_quantificatoin_map)
     
+    print("** salmon_error=\t" + str(salmon_error))
+    print("** kallisto_error=\t" + str(kallisto_error))
+
     return salmon_error, kallisto_error
 
 
