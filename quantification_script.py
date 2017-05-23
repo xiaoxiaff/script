@@ -5,11 +5,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from general_utils import simulate_reads
 from general_utils import get_average_accuracy
+from general_utils import execute_command
+from general_utils import remove_file_if_exists
 import salmon_utils as salmon
 import sailfish_utils as sailfish
 import kallisto_utils as kallisto
-from general_utils import execute_command
-from general_utils import remove_file_if_exists
+import RNASkim_utils as rnaskim
 
 
 OS = sys.platform
@@ -67,15 +68,19 @@ def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_read
     kallisto_quantificatoin_map = kallisto.run_kallisto(k, transcriptome_reference_file, get_index_dir_by_toolname("kallisto"), simulated_reads_dir, get_output_dir_by_toolname("kallisto"))
     kallisto_accuracy = get_average_accuracy(ground_truth_map, kallisto_quantificatoin_map)
     
-
+    # rnaskim
+    rnaskim_quantificatoin_map = rnaskim.run_kallisto(k, transcriptome_reference_file, get_index_dir_by_toolname("rnaskim"), simulated_reads_dir, get_output_dir_by_toolname("rnaskim"), 4)
+    rnaskim_accuracy = get_average_accuracy(ground_truth_map, rnaskim_quantificatoin_map)
+  
     print("** salmon_accuracy=\t" + str(salmon_accuracy))
-    print("** salmon_accuracy=\t" + str(sailfish_accuracy))
+    print("** sailfish_accuracy=\t" + str(sailfish_accuracy))
     print("** kallisto_accuracy=\t" + str(kallisto_accuracy))
+    print("** rnaskim_accuracy=\t" + str(rnaskim_accuracy))
 
-    return salmon_accuracy, sailfish_accuracy, kallisto_accuracy
+    return salmon_accuracy, sailfish_accuracy, kallisto_accuracy, rnaskim_accuracy
 
 
-def plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies):
+def plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies):
     plt.figure()
     n_groups = len(k_range)
     index = np.arange(n_groups)
@@ -84,10 +89,16 @@ def plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, s
     # axes.set_xlim([xmin,xmax])
     # axes.set_ylim([0,1])
     salmon_label = "Salmon,bestk={0:d},accuracy={1:.4f}".format(k_range[np.argmax(salmon_accuracies)],max(salmon_accuracies))
+    sailfish_label = "Sailfish,bestk={0:d},accuracy={1:.4f}".format(k_range[np.argmax(sailfish_accuracies)],max(sailfish_accuracies))
     kallisto_label = "Kallisto,bestk={0:d},accuracy={1:.4f}".format(k_range[np.argmax(kallisto_accuracies)],max(kallisto_accuracies))
+    rnaskim_label = "RNASkim,bestk={0:d},accuracy={1:.4f}".format(k_range[np.argmax(rnaskim_accuracies)],max(rnaskim_accuracies))
+
 
     plt.plot(index, salmon_accuracies, color='b', label=salmon_label)
+    plt.plot(index, sailfish_accuracies, color='r', label=sailfish_label)
     plt.plot(index, kallisto_accuracies, color='r', label=kallisto_label)
+    plt.plot(index, rnaskim_accuracies, color='r', label=rnaskim_label)
+
 
     plt.xlabel('k value')
     plt.ylabel('Accuracy')
@@ -135,14 +146,16 @@ def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, c
     salmon_accuracies = []
     sailfish_accuracies = []
     kallisto_accuracies = []
+    rnaskim_accuracies = []
     for k in k_range:
-        salmon_accuracy, sailfish_accuracy, kallisto_accuracy = run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
+        salmon_accuracy, sailfish_accuracy, kallisto_accuracy, run_with_k = run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
         salmon_accuracies.append(salmon_accuracy)
         sailfish_accuracies.append(sailfish_accuracy)
-        kallisto_accuracies.append(kallisto_accuracy)    
-    plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies)
+        kallisto_accuracies.append(kallisto_accuracy)  
+        rnaskim_accuracies.append(rnaskim_accuracy)  
+    plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies)
 
-    return salmon_accuracies, sailfish_accuracies, kallisto_accuracies
+    return salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies
 
 
 def main():
@@ -150,14 +163,18 @@ def main():
     salmon_accuracy_matrix = []
     kallisto_accuracy_matrix = []
     sailfish_accuracy_matrix = []
+    rnaskim_accuracy_matrix = []
+
     for coverage in coverage_range:
-        salmon_accuracies, sailfish_accuracies, kallisto_accuracies = run_with_simulation_parameters(number_of_transcripts, default_readlen, default_error_rate, coverage)
+        salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies = run_with_simulation_parameters(number_of_transcripts, default_readlen, default_error_rate, coverage)
         salmon_accuracy_matrix.append(salmon_accuracies)
         sailfish_accuracy_matrix.append(sailfish_accuracies)
         kallisto_accuracy_matrix.append(kallisto_accuracies)
+        rnaskim_accuracy_matrix.append(rnaskim_accuracies)
     plot_result_line_for_tool("salmon", "coverage", coverage_range, k_range, salmon_accuracy_matrix)
     plot_result_line_for_tool("sailfish", "coverage", coverage_range, k_range, sailfish_accuracy_matrix)
     plot_result_line_for_tool("kallisto", "coverage", coverage_range, k_range, kallisto_accuracy_matrix)
+    plot_result_line_for_tool("rnaskim", "coverage", coverage_range, k_range, rnaskim_accuracy_matrix)
 
 
     # # loop error_rate

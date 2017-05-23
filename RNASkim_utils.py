@@ -141,7 +141,7 @@ def run_RNASkim(k, transcriptome_reference_file, index_dir, sample_dir, output_d
 	print(res_dict)
 	return res_dict
 
-run_RNASkim(60, "chr22_small.fa", "test_results/RNASkim/index", "simulated_reads", "test_results/RNASkim/results", 4)
+# run_RNASkim(60, "chr22_small.fa", "test_results/RNASkim/index", "simulated_reads", "test_results/RNASkim/results", 4)
 
 
 
