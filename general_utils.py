@@ -16,14 +16,14 @@ def remove_file_if_exists(file_path):
 def get_command_output(command_string):
 
     command_args = command_string.split()
-    print("Executing command:\n" + command_string + "\n")
+    #print("Executing command:\n" + command_string + "\n")
     output = sub.check_output(command_args)
     return output.decode("utf-8")
 
 
 def execute_command(command_string, verbose):
     command_args = command_string.split()
-    print("Executing command:\n" + command_string + "\n")
+    #print("Executing command:\n" + command_string + "\n")
     #print(command_args)
     try:
         FNULL = open(os.devnull, 'w')

@@ -96,7 +96,7 @@ def get_result_dict(result_dir):
 
     for i in range(0, len(transcripts)):
         res[transcripts[i]] = num_reads[i]
-    print(result_dir + ": " + str(len(res)))
+    #print(result_dir + ": " + str(len(res)))
 
     return res
 
@@ -139,7 +139,7 @@ def run_RNASkim(k, transcriptome_reference_file, index_dir, sample_dir, output_d
 	for key in res_dict:
 		res_dict[key] /= 10
 
-	print(res_dict)
+	#print(res_dict)
 	return res_dict
 
 # run_RNASkim(60, "chr22_small.fa", "test_results/RNASkim/index", "simulated_reads", "test_results/RNASkim/results", 4)
