@@ -177,6 +177,41 @@ def main():
     plot_result_line_for_tool("rnaskim", "coverage", coverage_range, k_range, rnaskim_accuracy_matrix)
 
 
+    # loop error_rate
+    salmon_accuracy_matrix = []
+    kallisto_accuracy_matrix = []
+    sailfish_accuracy_matrix = []
+    rnaskim_accuracy_matrix = []
+
+    for error_rate in error_rate_range:
+        salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies = run_with_simulation_parameters(number_of_transcripts, default_readlen, error_rate, default_coverage)
+        salmon_accuracy_matrix.append(salmon_accuracies)
+        sailfish_accuracy_matrix.append(sailfish_accuracies)
+        kallisto_accuracy_matrix.append(kallisto_accuracies)
+        rnaskim_accuracy_matrix.append(rnaskim_accuracies)
+    plot_result_line_for_tool("salmon", "error_rate", error_rate_range, k_range, salmon_accuracy_matrix)
+    plot_result_line_for_tool("sailfish", "error_rate", error_rate_range, k_range, sailfish_accuracy_matrix)
+    plot_result_line_for_tool("kallisto", "error_rate", error_rate_range, k_range, kallisto_accuracy_matrix)
+    plot_result_line_for_tool("rnaskim", "error_rate", error_rate_range, k_range, rnaskim_accuracy_matrix)
+
+
+    # loop readlen
+    salmon_accuracy_matrix = []
+    kallisto_accuracy_matrix = []
+    sailfish_accuracy_matrix = []
+    rnaskim_accuracy_matrix = []
+
+    for readlen in readlen_range:
+        salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies = run_with_simulation_parameters(number_of_transcripts, readlen, default_error_rate, default_coverage)
+        salmon_accuracy_matrix.append(salmon_accuracies)
+        sailfish_accuracy_matrix.append(sailfish_accuracies)
+        kallisto_accuracy_matrix.append(kallisto_accuracies)
+        rnaskim_accuracy_matrix.append(rnaskim_accuracies)
+    plot_result_line_for_tool("salmon", "readlen", readlen_range, k_range, salmon_accuracy_matrix)
+    plot_result_line_for_tool("sailfish", "readlen", readlen_range, k_range, sailfish_accuracy_matrix)
+    plot_result_line_for_tool("kallisto", "readlen", readlen_range, k_range, kallisto_accuracy_matrix)
+    plot_result_line_for_tool("rnaskim", "readlen", readlen_range, k_range, rnaskim_accuracy_matrix)
+
     # # loop error_rate
     # for error_rate in error_rate_range:
     #     run_with_simulation_parameters(number_of_transcripts, default_readlen, error_rate, default_coverage)
