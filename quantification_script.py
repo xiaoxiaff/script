@@ -43,6 +43,13 @@ default_coverage = 20
 
 ##########################################################
 
+def get_index_dir_by_toolname(tool_name):
+    return project_dir + "/" + tool_name + "/index"
+
+
+def get_output_dir_by_toolname(tool_name):
+    return project_dir + "/" + tool_name + "/output"
+
 
 def cleanup():
     execute_command("rm {0}/*.png".format(project_dir))
@@ -55,14 +62,6 @@ def cleanup():
     execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("kallisto")))
     execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("sailfish")))
     execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("rnaskim")))
-
-
-def get_index_dir_by_toolname(tool_name):
-    return project_dir + "/" + tool_name + "/index"
-
-
-def get_output_dir_by_toolname(tool_name):
-    return project_dir + "/" + tool_name + "/output"
 
 
 def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
@@ -160,6 +159,7 @@ def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, c
 
 def main():
     # loop coverage
+    cleanup()
     salmon_accuracy_matrix = []
     kallisto_accuracy_matrix = []
     sailfish_accuracy_matrix = []
