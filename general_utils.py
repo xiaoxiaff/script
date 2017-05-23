@@ -71,10 +71,24 @@ def simulate_reads(
     return ground_truth_map
 
 
+def remove_gene_id_from_map(old_map):
+    new_map = {}
+    for (key,value) in old_map.items():
+        key_array = key.split("|")
+        new_key = ""
+        if(len(key_array)>1):
+            new_key = key_array[1]
+        else:
+            new_key = key
+        new_map[new_key] = old_map[key]
+    return new_map
+
+
 def get_average_accuracy(ground_truth_map, quantification_map):
     # print(ground_truth_map)
     # print(quantificatoin_map)
-
+    ground_truth_map = ground_truth_map(ground_truth_map)
+    quantification_map = ground_truth_map(quantification_map)
     errors = []
 
     for (key,ground_truth_value) in ground_truth_map.items():
@@ -86,11 +100,6 @@ def get_average_accuracy(ground_truth_map, quantification_map):
         errors.append(error)
 
     return 1-np.mean(errors)
-
-
-
-
-
 
 
 
