@@ -1,6 +1,8 @@
 from general_utils import execute_command
 from general_utils import get_command_output
+from general_utils import remove_file_if_exists
 import numpy as np
+
 
 # GLOG_logtostderr=1 ./rs_cluster  -gene_fasta=gene.fa -num_threads=4 -output=clustered.fa -rs_length=60
 def cluster(transcriptome_reference_file, cluster_output, k, numthreads):
@@ -102,6 +104,10 @@ def get_result_dict(result_dir):
 
 
 def run_RNASkim(k, transcriptome_reference_file, index_dir, sample_dir, output_dir, numthreads):
+	remove_file_if_exists(index_dir + "/" + "clustered.fa")
+	remove_file_if_exists(index_dir + "/" + "clustered_gene.fa.pb")
+	remove_file_if_exists(index_dir + "/" + "clustered_gene.fa.sk")
+
 	cluster_output = index_dir + "/clustered.fa"
 	index_file = index_dir + "/clustered_gene.fa.pb"
 	selected_keys_file = index_dir + "/clustered_gene.fa.sk"
