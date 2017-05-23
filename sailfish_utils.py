@@ -74,7 +74,7 @@ def run_sailfish(k, transcriptome_reference_file, index_dir, sample_dir, output_
         res_dict[key] /= 10
           
 
-    print(res_dict)
+    #print(res_dict)
     return res_dict
 
 
