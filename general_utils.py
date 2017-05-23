@@ -23,7 +23,7 @@ def get_command_output(command_string):
 
 def execute_command(command_string, verbose):
     command_args = command_string.split()
-    #print("Executing command:\n" + command_string + "\n")
+    print("Executing command:\n" + command_string + "\n")
     #print(command_args)
     try:
         FNULL = open(os.devnull, 'w')
@@ -71,14 +71,17 @@ def simulate_reads(
     return ground_truth_map
 
 
-def get_average_accuracy(ground_truth_map, quantificatoin_map):
+def get_average_accuracy(ground_truth_map, quantification_map):
     # print(ground_truth_map)
     # print(quantificatoin_map)
 
     errors = []
 
     for (key,ground_truth_value) in ground_truth_map.items():
-        quantification_value = quantificatoin_map[key]
+        print(key)
+        #print(ground_truth_map.keys())
+        print(quantification_map.items())
+        quantification_value = quantification_map[key]
         error = abs(float(quantification_value) - float(ground_truth_value))/float(ground_truth_value)
         errors.append(error)
 

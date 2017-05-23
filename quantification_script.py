@@ -69,7 +69,7 @@ def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_read
     kallisto_accuracy = get_average_accuracy(ground_truth_map, kallisto_quantificatoin_map)
     
     # rnaskim
-    rnaskim_quantificatoin_map = rnaskim.run_kallisto(k, transcriptome_reference_file, get_index_dir_by_toolname("rnaskim"), simulated_reads_dir, get_output_dir_by_toolname("rnaskim"), 4)
+    rnaskim_quantificatoin_map = rnaskim.run_RNASkim(k, transcriptome_reference_file, get_index_dir_by_toolname("rnaskim"), simulated_reads_dir, get_output_dir_by_toolname("rnaskim"), 4)
     rnaskim_accuracy = get_average_accuracy(ground_truth_map, rnaskim_quantificatoin_map)
   
     print("** salmon_accuracy=\t" + str(salmon_accuracy))
@@ -148,7 +148,7 @@ def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, c
     kallisto_accuracies = []
     rnaskim_accuracies = []
     for k in k_range:
-        salmon_accuracy, sailfish_accuracy, kallisto_accuracy, run_with_k = run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
+        salmon_accuracy, sailfish_accuracy, kallisto_accuracy, rnaskim_accuracy = run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
         salmon_accuracies.append(salmon_accuracy)
         sailfish_accuracies.append(sailfish_accuracy)
         kallisto_accuracies.append(kallisto_accuracy)  
