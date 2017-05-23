@@ -34,6 +34,11 @@ def execute_command(command_string, verbose):
         raise
 
 
+def cleanup_dir(target_dir):
+    command = "rm -rf {0}/*".format(target_dir)
+    execute_command(command, True)
+
+
 def simulate_reads(
     script_path, 
     number_of_transcripts, 

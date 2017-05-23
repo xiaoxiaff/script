@@ -1,4 +1,5 @@
 from general_utils import execute_command
+from general_utils import cleanup_dir
 import numpy as np
 
 
@@ -48,6 +49,7 @@ def get_result_dict(result_dir):
 
 
 def run_sailfish(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
+    cleanup_dir(index_dir)
     build_index(k, transcriptome_reference_file, index_dir)
     
     res_dict = dict()

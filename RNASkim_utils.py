@@ -1,6 +1,6 @@
 from general_utils import execute_command
 from general_utils import get_command_output
-from general_utils import remove_file_if_exists
+from general_utils import cleanup_dir
 import numpy as np
 
 
@@ -42,6 +42,7 @@ def select(index_file, selected_keys_file):
 		+ selected_keys_file
 	
 	execute_command(command, True)
+
 
 # GLOG_logtostderr=1 ./rs_select -index_file=clustered_gene.fa.pb -selected_keys_file=clustered_gene.fa.sk  -rs_length=60
 def select_with_k(index_file, selected_keys_file, k):
@@ -104,9 +105,7 @@ def get_result_dict(result_dir):
 
 
 def run_RNASkim(k, transcriptome_reference_file, index_dir, sample_dir, output_dir, numthreads):
-	remove_file_if_exists(index_dir + "/" + "clustered.fa")
-	remove_file_if_exists(index_dir + "/" + "clustered_gene.fa.pb")
-	remove_file_if_exists(index_dir + "/" + "clustered_gene.fa.sk")
+	cleanup_dir(index_dir)
 
 	cluster_output = index_dir + "/clustered.fa"
 	index_file = index_dir + "/clustered_gene.fa.pb"
