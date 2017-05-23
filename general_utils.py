@@ -23,7 +23,7 @@ def get_command_output(command_string):
 
 def execute_command(command_string, verbose):
     command_args = command_string.split()
-    #print("Executing command:\n" + command_string + "\n")
+    print("Executing command:\n" + command_string + "\n")
     #print(command_args)
     try:
         FNULL = open(os.devnull, 'w')
@@ -89,8 +89,9 @@ def remove_gene_id_from_map(old_map):
 def get_average_accuracy(ground_truth_map, quantification_map):
     # print(ground_truth_map)
     # print(quantificatoin_map)
-    #print("len=\n"+str(len(ground_truth_map)))
-    #print("len=\n"+str(len(quantification_map)))
+    if len(ground_truth_map)!=len(quantification_map):
+        print("ground truth len=\n"+str(len(ground_truth_map)))
+        print("quantification len=\n"+str(len(quantification_map)))
     ground_truth_map = remove_gene_id_from_map(ground_truth_map)
     quantification_map = remove_gene_id_from_map(quantification_map)
     errors = []

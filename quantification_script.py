@@ -33,12 +33,12 @@ simulated_reads_dir = project_dir + "/simulated_reads"
 
 ################### Settings ############################
 
-k_range = np.arange(29,33,2)
-coverage_range = np.arange(20,40,10)
+k_range = np.arange(11,33,2)
+coverage_range = np.arange(20,50,10)
 error_rate_range = np.arange(0.0,0.1,0.005)
-readlen_range = np.arange(0.0,0.1,0.005)
+readlen_range = np.arange(70,130,10)
 
-number_of_transcripts = 10
+number_of_transcripts = 12
 default_readlen = 100
 default_error_rate = 0.005
 default_coverage = 20
@@ -57,18 +57,22 @@ def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_read
     print("quant with k=" + str(k) + "...")
 
     # salmon
+    print("run salmon...")
     salmon_quantificatoin_map = salmon.run_salmon(k, transcriptome_reference_file, get_index_dir_by_toolname("salmon"), simulated_reads_dir, get_output_dir_by_toolname("salmon"))
     salmon_accuracy = get_average_accuracy(ground_truth_map, salmon_quantificatoin_map)
    
     # sailfish
+    print("run sailfish...")
     sailfish_quantificatoin_map = sailfish.run_sailfish(k, transcriptome_reference_file, get_index_dir_by_toolname("sailfish"), simulated_reads_dir, get_output_dir_by_toolname("sailfish"))
     sailfish_accuracy = get_average_accuracy(ground_truth_map, sailfish_quantificatoin_map)
        
     # kallisto, max allowed k=31
+    print("run kallisto...")
     kallisto_quantificatoin_map = kallisto.run_kallisto(k, transcriptome_reference_file, get_index_dir_by_toolname("kallisto"), simulated_reads_dir, get_output_dir_by_toolname("kallisto"))
     kallisto_accuracy = get_average_accuracy(ground_truth_map, kallisto_quantificatoin_map)
     
     # rnaskim
+    print("run rnaskim...")
     rnaskim_quantificatoin_map = rnaskim.run_RNASkim(k, transcriptome_reference_file, get_index_dir_by_toolname("rnaskim"), simulated_reads_dir, get_output_dir_by_toolname("rnaskim"), 4)
     rnaskim_accuracy = get_average_accuracy(ground_truth_map, rnaskim_quantificatoin_map)
   
@@ -96,8 +100,8 @@ def plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, s
 
     plt.plot(index, salmon_accuracies, color='b', label=salmon_label)
     plt.plot(index, sailfish_accuracies, color='r', label=sailfish_label)
-    plt.plot(index, kallisto_accuracies, color='r', label=kallisto_label)
-    plt.plot(index, rnaskim_accuracies, color='r', label=rnaskim_label)
+    plt.plot(index, kallisto_accuracies, color='g', label=kallisto_label)
+    plt.plot(index, rnaskim_accuracies, color='y', label=rnaskim_label)
 
 
     plt.xlabel('k value')
