@@ -1,4 +1,5 @@
 from general_utils import execute_command
+from general_utils import get_command_output
 import numpy as np
 
 # GLOG_logtostderr=1 ./rs_cluster  -gene_fasta=gene.fa -num_threads=4 -output=clustered.fa -rs_length=60
@@ -72,10 +73,13 @@ def estimate(count_file, estimation_file):
 	command = "rs_estimate -count_file=" \
 		+ count_file
 
-	output = get_command_output(command, True)
-	print("Command Output:\n")
-	print(output)
-	print("----------------------------")
+	output = get_command_output(command)
+	text_file = open(estimation_file, "w")
+	text_file.write(str(output))
+	text_file.close()
+	#print("Command Output:\n")
+	#print(output)
+	#print("----------------------------")
 
 
 def get_result_dict(result_dir):       

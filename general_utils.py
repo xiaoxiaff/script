@@ -14,8 +14,11 @@ def remove_file_if_exists(file_path):
 
 
 def get_command_output(command_string):
-    output = sub.check_output(command_string)
-    # print()
+
+    command_args = command_string.split()
+    print(command_args)
+    output = sub.check_output(command_args)
+    return output.decode("utf-8")
 
 
 def execute_command(command_string, verbose):
