@@ -1,2 +1,5 @@
 methods: Cufflinks, Sailfish, RNASkim, Kallisto, Salmon
-dataset?
+
+ssh ubuntu@ec2-54-193-61-151.us-west-1.compute.amazonaws.com
+
+
