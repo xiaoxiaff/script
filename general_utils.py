@@ -13,6 +13,11 @@ def remove_file_if_exists(file_path):
         pass
 
 
+def get_command_output(command_string):
+    output = sub.check_output(command_string)
+    # print()
+
+
 def execute_command(command_string, verbose):
     command_args = command_string.split()
     #print("Executing command:\n" + command_string + "\n")

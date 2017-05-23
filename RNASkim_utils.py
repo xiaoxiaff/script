@@ -69,11 +69,12 @@ def count(selected_keys_file, count_file, sample_pair_1, sample_pair_2, numthrea
 
 def estimate(count_file, estimation_file):
 	command = "rs_estimate -count_file=" \
-		+ count_file \
-		+ " > " \
-		+ estimation_file
+		+ count_file
 
-	execute_command(command, True)
+	output = get_command_output(command, True)
+	print("Command Output:\n")
+	print(output)
+	print("----------------------------")
 
 
 
