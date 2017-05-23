@@ -78,5 +78,5 @@ def run_sailfish(k, transcriptome_reference_file, index_dir, sample_dir, output_
     return res_dict
 
 
-run_sailfish(31, "chr22_small.fa", "test_results/sailfish/index", "simulated_reads", "test_results/sailfish/results")
+# run_sailfish(31, "chr22_small.fa", "test_results/sailfish/index", "simulated_reads", "test_results/sailfish/results")
 
