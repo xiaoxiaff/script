@@ -33,12 +33,12 @@ simulated_reads_dir = project_dir + "/simulated_reads"
 
 ################### Settings ############################
 
-k_range = np.arange(11,33,2)
+k_range = np.arange(17,33,2)
 coverage_range = np.arange(20,50,10)
 error_rate_range = np.arange(0.0,0.1,0.005)
 readlen_range = np.arange(70,130,10)
 
-number_of_transcripts = 12
+number_of_transcripts = 20
 default_readlen = 100
 default_error_rate = 0.005
 default_coverage = 20
@@ -141,16 +141,21 @@ def plot_result_line_for_tool(tool_name, plot_type, labels, k_range, accuracy_ma
 
 
 def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, coverage):
+
+    ground_truth_map = simulate_reads(simulation_script_path, number_of_transcripts, readlen, error_rate, coverage, project_dir)
     print("Simulation settings:")
+    print("\tTotal Number of Reads = " + str(sum(ground_truth_map.values())))
+    print("\tnumber_of_transctipts = " + str(number_of_transcripts))
     print("\treadlen = " + str(readlen))
     print("\terror_rate = " + str(error_rate))
     print("\tcoverage = " + str(coverage))
 
-    ground_truth_map = simulate_reads(simulation_script_path, number_of_transcripts, readlen, error_rate, coverage, project_dir)
     salmon_accuracies = []
     sailfish_accuracies = []
     kallisto_accuracies = []
     rnaskim_accuracies = []
+
+
     for k in k_range:
         salmon_accuracy, sailfish_accuracy, kallisto_accuracy, rnaskim_accuracy = run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
         salmon_accuracies.append(salmon_accuracy)
