@@ -1,8 +1,9 @@
 from general_utils import execute_command
+import numpy as np
 
 # GLOG_logtostderr=1 ./rs_cluster  -gene_fasta=gene.fa -num_threads=4 -output=clustered.fa -rs_length=60
 def cluster(transcriptome_reference_file, cluster_output, k, numthreads):
-	command = "GLOG_logtostderr=1 rs_cluster -gene_fasta=" \
+	command = "rs_cluster -gene_fasta=" \
 		+ transcriptome_reference_file \
 		+ " -num_threads=" \
 		+ str(numthreads) \
@@ -17,7 +18,7 @@ def cluster(transcriptome_reference_file, cluster_output, k, numthreads):
 
 # GLOG_logtostderr=1  ./rs_index -transcript_fasta=clustered.fa -index_file=clustered_gene.fa.pb -rs_length=60 -num_threads 4
 def build_index(cluster_output, index_file, k, numthreads):
-	command = "GLOG_logtostderr=1 rs_index -transcript_fasta=" \
+	command = "rs_index -transcript_fasta=" \
 		+ cluster_output \
 		+ " -index_file=" \
 		+ index_file \
@@ -32,7 +33,7 @@ def build_index(cluster_output, index_file, k, numthreads):
 
 # GLOG_logtostderr=1 ./rs_select -index_file=clustered_gene.fa.pb -selected_keys_file=clustered_gene.fa.sk
 def select(index_file, selected_keys_file):
-	command = "GLOG_logtostderr=1 rs_select -index_file=" \
+	command = "rs_select -index_file=" \
 		+ index_file \
 		+ " -selected_keys_file=" \
 		+ selected_keys_file
@@ -41,7 +42,7 @@ def select(index_file, selected_keys_file):
 
 # GLOG_logtostderr=1 ./rs_select -index_file=clustered_gene.fa.pb -selected_keys_file=clustered_gene.fa.sk  -rs_length=60
 def select_with_k(index_file, selected_keys_file, k):
-	command = "GLOG_logtostderr=1 rs_select -index_file=" \
+	command = "rs_select -index_file=" \
 		+ index_file \
 		+ " -selected_keys_file=" \
 		+ selected_keys_file \
@@ -53,7 +54,7 @@ def select_with_k(index_file, selected_keys_file, k):
 
 # GLOG_logtostderr=1  ../src/rs_count  -selected_keys_file=clustered_gene.fa.sk -count_file=clustered_gene.fa.cf -read_files1=../test/test.fastq_1 -read_files2=../test/test.fastq_2 -num_threads=1
 def count(selected_keys_file, count_file, sample_pair_1, sample_pair_2, numthreads):
-	command = "GLOG_logtostderr=1 rs_count -selected_keys_file=" \
+	command = "rs_count -selected_keys_file=" \
 		+ selected_keys_file \
 		+ " -count_file=" \
 		+ count_file \
@@ -75,6 +76,72 @@ def estimate(count_file, estimation_file):
 	print("Command Output:\n")
 	print(output)
 	print("----------------------------")
+
+
+def get_result_dict(result_dir):       
+    matrix = np.genfromtxt(
+        result_dir + '/estimation.txt',
+        names = True,
+        dtype=None,
+        delimiter="\t")
+
+    transcripts = [x[0] for x in matrix]
+    num_reads = [x[2] for x in matrix]
+
+    res = dict()
+
+    for i in range(0, len(transcripts)):
+        res[transcripts[i]] = num_reads[i]
+
+    return res
+
+
+def run_RNASkim(k, transcriptome_reference_file, index_dir, sample_dir, output_dir, numthreads):
+	cluster_output = index_dir + "/clustered.fa"
+	index_file = index_dir + "/clustered_gene.fa.pb"
+	selected_keys_file = index_dir + "/clustered_gene.fa.sk"
+
+	cluster(transcriptome_reference_file, cluster_output, k, numthreads)
+	build_index(cluster_output, index_file, k, numthreads)
+	select(index_file, selected_keys_file)
+
+
+	res_dict = dict()
+	for i in range(1, 11):
+		if i < 10:
+			sample_pair1 = sample_dir + '/sample_0' + str(i)+ '_1.fasta'
+			sample_pair2 = sample_dir + '/sample_0' + str(i) + '_2.fasta'
+		else:
+			sample_pair1 = sample_dir + '/sample_' + str(i)+ '_1.fasta'
+			sample_pair2 = sample_dir + '/sample_' + str(i) + '_2.fasta'
+
+		result_output_dir = output_dir + '/sample' + str(i) + '_result'
+		count_file = result_output_dir + "/clustered_gene.fa.cf"
+		estimation_file = result_output_dir + "/estimation.txt"
+
+		count(selected_keys_file, count_file, sample_pair1, sample_pair2, numthreads)
+		estimate(count_file, estimation_file)
+
+		sample_dict = get_result_dict(result_output_dir)
+
+		for key in sample_dict:
+			if i == 1:
+				res_dict[key] = sample_dict[key]
+			else:
+				res_dict[key] += sample_dict[key]
+
+
+	for key in res_dict:
+		res_dict[key] /= 10
+
+	print(res_dict)
+	return res_dict
+
+run_RNASkim(60, "chr22_small.fa", "test_results/RNASkim/index", "simulated_reads", "test_results/RNASkim/results", 4)
+
+
+
+# get_result_dict("/home/ubuntu/cs229/rnaskim")
 
 
 
