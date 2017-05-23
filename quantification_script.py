@@ -141,7 +141,7 @@ def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, c
         kallisto_accuracies.append(kallisto_accuracy)    
     plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies)
 
-    return salmon_accuracies, kallisto_accuracies
+    return salmon_accuracies, sailfish_accuracies, kallisto_accuracies
 
 
 def main():

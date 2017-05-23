@@ -15,8 +15,11 @@ def remove_file_if_exists(file_path):
 
 def execute_command(command_string, verbose):
     command_args = command_string.split()
+    print("Executing command:\n" + command_string + "\n")
+    #print(command_args)
     try:
         FNULL = open(os.devnull, 'w')
+        #sub.check_call(command_args)        
         sub.check_call(command_args, stdout=FNULL, stderr=sub.STDOUT)
     except:
         print("\n*** Error while executing:\n" + command_string + "\n")
