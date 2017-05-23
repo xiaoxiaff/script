@@ -9,6 +9,7 @@ import salmon_utils as salmon
 import sailfish_utils as sailfish
 import kallisto_utils as kallisto
 from general_utils import execute_command
+from general_utils import remove_file_if_exists
 
 
 OS = sys.platform
@@ -49,19 +50,6 @@ def get_index_dir_by_toolname(tool_name):
 
 def get_output_dir_by_toolname(tool_name):
     return project_dir + "/" + tool_name + "/output"
-
-
-def cleanup():
-    execute_command("rm {0}/*.png".format(project_dir))
-    execute_command("rm {0}/*.txt".format(project_dir))
-    execute_command("rm -rf ".format(simulated_reads_dir))
-    execute_command("rm {0}/*".format(get_index_dir_by_toolname("salmon")))
-    execute_command("rm {0}".format(get_index_dir_by_toolname("kallisto")))
-    execute_command("rm -rf {0}/*".format(get_index_dir_by_toolname("sailfish")))
-    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("salmon")))
-    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("kallisto")))
-    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("sailfish")))
-    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("rnaskim")))
 
 
 def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
@@ -159,7 +147,6 @@ def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, c
 
 def main():
     # loop coverage
-    cleanup()
     salmon_accuracy_matrix = []
     kallisto_accuracy_matrix = []
     sailfish_accuracy_matrix = []
