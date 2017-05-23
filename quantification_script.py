@@ -8,6 +8,7 @@ from general_utils import get_average_accuracy
 import salmon_utils as salmon
 import sailfish_utils as sailfish
 import kallisto_utils as kallisto
+from general_utils import execute_command
 
 
 OS = sys.platform
@@ -41,6 +42,19 @@ default_error_rate = 0.005
 default_coverage = 20
 
 ##########################################################
+
+
+def cleanup():
+    execute_command("rm {0}/*.png".format(project_dir))
+    execute_command("rm {0}/*.txt".format(project_dir))
+    execute_command("rm -rf ".format(simulated_reads_dir))
+    execute_command("rm {0}/*".format(get_index_dir_by_toolname("salmon")))
+    execute_command("rm {0}".format(get_index_dir_by_toolname("kallisto")))
+    execute_command("rm -rf {0}/*".format(get_index_dir_by_toolname("sailfish")))
+    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("salmon")))
+    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("kallisto")))
+    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("sailfish")))
+    execute_command("rm -rf {0}/*".format(get_output_dir_by_toolname("rnaskim")))
 
 
 def get_index_dir_by_toolname(tool_name):
