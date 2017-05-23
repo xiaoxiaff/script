@@ -1,6 +1,6 @@
 import re
 import sys
-import os
+import os, shutil
 import subprocess as sub
 import numpy as np
 from sklearn.metrics import average_precision_score
@@ -35,8 +35,15 @@ def execute_command(command_string, verbose):
 
 
 def cleanup_dir(target_dir):
-    command = "rm -rf {0}/*".format(target_dir)
-    execute_command(command, True)
+    folder = target_dir
+    for the_file in os.listdir(folder):
+        file_path = os.path.join(folder, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception as e:
+            print(e)
 
 
 def simulate_reads(
