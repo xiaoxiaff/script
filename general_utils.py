@@ -16,7 +16,7 @@ def remove_file_if_exists(file_path):
 def get_command_output(command_string):
 
     command_args = command_string.split()
-    print(command_args)
+    print("Executing command:\n" + command_string + "\n")
     output = sub.check_output(command_args)
     return output.decode("utf-8")
 
@@ -72,14 +72,16 @@ def simulate_reads(
 
 
 def remove_gene_id_from_map(old_map):
+    #print("old_map:")
+    #print(old_map)
     new_map = {}
     for (key,value) in old_map.items():
-        key_array = key.split("|")
+        key_array = key.decode("utf-8").split("|")
         new_key = ""
         if(len(key_array)>1):
             new_key = key_array[1]
         else:
-            new_key = key
+            new_key = key_array[0]
         new_map[new_key] = old_map[key]
     return new_map
 
@@ -87,14 +89,21 @@ def remove_gene_id_from_map(old_map):
 def get_average_accuracy(ground_truth_map, quantification_map):
     # print(ground_truth_map)
     # print(quantificatoin_map)
-    ground_truth_map = ground_truth_map(ground_truth_map)
-    quantification_map = ground_truth_map(quantification_map)
+    #print("len=\n"+str(len(ground_truth_map)))
+    #print("len=\n"+str(len(quantification_map)))
+    ground_truth_map = remove_gene_id_from_map(ground_truth_map)
+    quantification_map = remove_gene_id_from_map(quantification_map)
     errors = []
-
+    #print("truth map:,len=\n"+str(len(ground_truth_map)))
+    #print(ground_truth_map.items())
+    #print("quant map:\n")
+    #print(quantification_map.items())
     for (key,ground_truth_value) in ground_truth_map.items():
-        print(key)
+        #print("key:\n")
+        #print(key)
         #print(ground_truth_map.keys())
-        print(quantification_map.items())
+
+
         quantification_value = quantification_map[key]
         error = abs(float(quantification_value) - float(ground_truth_value))/float(ground_truth_value)
         errors.append(error)

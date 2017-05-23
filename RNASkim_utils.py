@@ -85,7 +85,7 @@ def estimate(count_file, estimation_file):
 def get_result_dict(result_dir):       
     matrix = np.genfromtxt(
         result_dir + '/estimation.txt',
-        names = True,
+        names = None,
         dtype=None,
         delimiter="\t")
 
@@ -96,6 +96,7 @@ def get_result_dict(result_dir):
 
     for i in range(0, len(transcripts)):
         res[transcripts[i]] = num_reads[i]
+    print(result_dir + ": " + str(len(res)))
 
     return res
 
