@@ -177,7 +177,7 @@ def plot_accuracy_for_tool(tool_name, plot_type, labels, k_range, accuracy_matri
         current_array = accuracy_matrix[i]
         besk_k = k_range[np.argmax(current_array)]
         best_accuracy = max(current_array)
-        label = "{0}={1},bestK={2},accuracy={3:.4f}%".format(plot_type,str(labels[i]),str(besk_k),best_accuracy)
+        label = "{0}={1},bestK={2},accuracy={3:.4f}".format(plot_type,str(labels[i]),str(besk_k),best_accuracy)
         plt.plot(index, current_array, color = colors[i], ls='-', marker='o', label=label)
     
     plt.xticks(index, k_range)
@@ -360,7 +360,7 @@ def main():
     error_rate_range = np.arange(0.0,0.08,0.01)
     readlen_range = np.arange(70,130,10)
 
-    tools = ["salmon","kallisto"]
+    tools = ["salmon","sailfish","kallisto"]
     for tool_name in tools:
         run_coverage_for_tool(tool_name, coverage_range, k_range)
         run_error_rate_for_tool(tool_name, error_rate_range, k_range)
