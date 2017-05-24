@@ -2,10 +2,12 @@ from general_utils import execute_command
 from general_utils import get_command_output
 from general_utils import cleanup_dir
 import numpy as np
+import time
 
 
 verbose = False
-def init(v):
+def set_verbose(v):
+    global verbose
     verbose = v
 
 
@@ -111,6 +113,7 @@ def get_result_dict(result_dir):
 
 def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
 	cleanup_dir(index_dir)
+    time1 = time.time()
 	numthreads = 4
 	cluster_output = index_dir + "/clustered.fa"
 	index_file = index_dir + "/clustered_gene.fa.pb"
@@ -149,8 +152,10 @@ def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
 	for key in res_dict:
 		res_dict[key] /= 10
 
-	#print(res_dict)
-	return res_dict
+    time2 = time.time()
+    elapsed_ms = (time2-time1)*1000.0
+    
+    return res_dict, elapsed_ms
 
 # run_RNASkim(60, "chr22_small.fa", "test_results/RNASkim/index", "simulated_reads", "test_results/RNASkim/results", 4)
 

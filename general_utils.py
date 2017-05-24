@@ -3,7 +3,8 @@ import sys
 import os, shutil
 import subprocess as sub
 import numpy as np
-from sklearn.metrics import average_precision_score
+import timeit
+import time
 
 
 def remove_file_if_exists(file_path):

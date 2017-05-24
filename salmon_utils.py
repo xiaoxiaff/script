@@ -1,9 +1,11 @@
 from general_utils import execute_command
 import numpy as np
+import time
 
 
 verbose = False
-def init(v):
+def set_verbose(v):
+    global verbose
     verbose = v
 
 
@@ -52,6 +54,8 @@ def get_result_dict(result_dir):
 
 
 def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
+    time1 = time.time()
+
     build_index(transcriptome_reference_file, index_output_dir)
 
     res_dict = dict()
@@ -75,8 +79,11 @@ def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_di
 
     for key in res_dict:
         res_dict[key] /= 10
-          
-    return res_dict
+
+    time2 = time.time()
+    elapsed_ms = (time2-time1)*1000.0
+    
+    return res_dict, elapsed_ms
 
 
 # run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads", "test_results/salmon/quant_results")

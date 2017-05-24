@@ -1,10 +1,12 @@
 from general_utils import execute_command
 import numpy as np
+import time
 # https://pachterlab.github.io/kallisto/manual
 
 
 verbose = False
-def init(v):
+def set_verbose(v):
+    global verbose
     verbose = v
 
 
@@ -51,6 +53,8 @@ def get_result_dict(result_dir):
 
 
 def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
+    time1 = time.time()
+
     build_index_with_k(transcriptome_reference_file, k, index_output_dir)
 
     res_dict = dict()
@@ -75,7 +79,10 @@ def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_di
     for key in res_dict:
         res_dict[key] /= 10
   
-    return res_dict
+    time2 = time.time()
+    elapsed_ms = (time2-time1)*1000.0
+    
+    return res_dict, elapsed_ms
 
 
 # run_kallisto(31, "chr22_small.fa", "test_results/kallisto/index", "simulated_reads", "test_results/kallisto/quant_results")
