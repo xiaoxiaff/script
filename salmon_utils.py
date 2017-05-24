@@ -2,13 +2,18 @@ from general_utils import execute_command
 import numpy as np
 
 
+verbose = False
+def init(v):
+    verbose = v
+
+
 def build_index(transcriptome_reference_file,index_output_path):
     command = "salmon index -t " \
         + transcriptome_reference_file \
         + " -i " \
         + index_output_path
         
-    execute_command(command,True)
+    execute_command(command,verbose)
 
 
 def quant_with_k(k,sample_pair1,sample_pair2, index_dir, output_dir):
@@ -24,7 +29,7 @@ def quant_with_k(k,sample_pair1,sample_pair2, index_dir, output_dir):
         + " -k " \
         + str(k)
 
-    execute_command(command,True)
+    execute_command(command,verbose)
 
 
 def get_result_dict(result_dir):       
@@ -46,7 +51,7 @@ def get_result_dict(result_dir):
     return res
 
 
-def run_salmon(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
+def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
     build_index(transcriptome_reference_file, index_output_dir)
 
     res_dict = dict()

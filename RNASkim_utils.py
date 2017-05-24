@@ -4,6 +4,11 @@ from general_utils import cleanup_dir
 import numpy as np
 
 
+verbose = False
+def init(v):
+    verbose = v
+
+
 # GLOG_logtostderr=1 ./rs_cluster  -gene_fasta=gene.fa -num_threads=4 -output=clustered.fa -rs_length=60
 def cluster(transcriptome_reference_file, cluster_output, k, numthreads):
 	command = "rs_cluster -gene_fasta=" \
@@ -15,7 +20,7 @@ def cluster(transcriptome_reference_file, cluster_output, k, numthreads):
 		+ " -rs_length=" \
 		+ str(k)
 
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 
@@ -30,7 +35,7 @@ def build_index(cluster_output, index_file, k, numthreads):
 		+ " -num_threads=" \
 		+ str(numthreads)
 
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 
@@ -41,7 +46,7 @@ def select(index_file, selected_keys_file):
 		+ " -selected_keys_file=" \
 		+ selected_keys_file
 	
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 # GLOG_logtostderr=1 ./rs_select -index_file=clustered_gene.fa.pb -selected_keys_file=clustered_gene.fa.sk  -rs_length=60
@@ -53,7 +58,7 @@ def select_with_k(index_file, selected_keys_file, k):
 		+ " -rs_length=" \
 		+ str(k)
 	
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 # GLOG_logtostderr=1  ../src/rs_count  -selected_keys_file=clustered_gene.fa.sk -count_file=clustered_gene.fa.cf -read_files1=../test/test.fastq_1 -read_files2=../test/test.fastq_2 -num_threads=1
@@ -69,14 +74,14 @@ def count(selected_keys_file, count_file, sample_pair_1, sample_pair_2, numthrea
 		+ " -num_threads=" \
 		+ str(numthreads)
 
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 def estimate(count_file, estimation_file):
 	command = "rs_estimate -count_file=" \
 		+ count_file
 
-	output = get_command_output(command)
+	output = get_command_output(command, verbose)
 	text_file = open(estimation_file, "w")
 	text_file.write(str(output))
 	text_file.close()
@@ -104,9 +109,9 @@ def get_result_dict(result_dir):
     return res
 
 
-def run_RNASkim(k, transcriptome_reference_file, index_dir, sample_dir, output_dir, numthreads):
+def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
 	cleanup_dir(index_dir)
-
+	numthreads = 4
 	cluster_output = index_dir + "/clustered.fa"
 	index_file = index_dir + "/clustered_gene.fa.pb"
 	selected_keys_file = index_dir + "/clustered_gene.fa.sk"

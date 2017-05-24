@@ -3,6 +3,11 @@ from general_utils import cleanup_dir
 import numpy as np
 
 
+verbose = False
+def init(v):
+    verbose = v
+
+
 def build_index(k, transcriptome_reference_file, index_output_path):
     command = "sailfish index -t " \
         + transcriptome_reference_file \
@@ -11,7 +16,7 @@ def build_index(k, transcriptome_reference_file, index_output_path):
         + " -k " \
         + str(k)
 
-    execute_command(command,True)
+    execute_command(command,verbose)
 
 
 def quant_with_k(sample_pair1, sample_pair2, index_dir, output_dir):
@@ -26,7 +31,7 @@ def quant_with_k(sample_pair1, sample_pair2, index_dir, output_dir):
         + " -p 8 -o " \
         + output_dir
 
-    execute_command(command,True)
+    execute_command(command,verbose)
 
 def get_result_dict(result_dir):       
     matrix = np.genfromtxt(
@@ -48,7 +53,7 @@ def get_result_dict(result_dir):
     return res
 
 
-def run_sailfish(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
+def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
     cleanup_dir(index_dir)
     build_index(k, transcriptome_reference_file, index_dir)
     

@@ -1,49 +1,79 @@
 import sys
+import os
+from optparse import OptionParser
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
-from general_utils import simulate_reads
-from general_utils import get_average_accuracy
 from general_utils import execute_command
 from general_utils import remove_file_if_exists
-import salmon_utils as salmon
-import sailfish_utils as sailfish
-import kallisto_utils as kallisto
-import RNASkim_utils as rnaskim
+from general_utils import get_average_accuracy
+from general_utils import cleanup_dir
+import datetime
 
 
-OS = sys.platform
+################### Global Vars      ############################
 
-print("Running on platform: " + OS)
-print("Setting global variables...")
+project_dir = ""
+log_dir = ""
+simulation_script_path = ""
+transcriptome_reference_file = ""
+simulated_reads_dir = ""
 
-# mac
-if(OS=="darwin"):
-    project_dir = "/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project"
-    simulation_script_path = project_dir + "/simulation_script.R"
-#ubuntu
-else:
-    project_dir = "/home/ubuntu/cs229"
-    simulation_script_path = project_dir + "/CS229S_Project/simulation_script.R"
+number_of_transcripts = 10
+verbose = True
 
-transcriptome_reference_file = project_dir + "/chr22_small.fa"
-simulated_reads_dir = project_dir + "/simulated_reads"
+log_file_name = ""
 
-
-################### Settings ############################
-
-k_range = np.arange(17,33,2)
-coverage_range = np.arange(20,50,10)
-error_rate_range = np.arange(0.0,0.1,0.005)
-readlen_range = np.arange(70,130,10)
-
-number_of_transcripts = 20
+################### Default Settings ############################
 default_readlen = 100
 default_error_rate = 0.005
 default_coverage = 20
 
-##########################################################
+
+def print_and_log(line):
+    print(line)
+
+    with open(log_dir + "/" + log_file_name, "a") as log:
+        log.write(line + "\n")
+
+
+def simulate_reads(
+    script_path, 
+    number_of_transcripts, 
+    readlen, 
+    error_rate, 
+    coverage, 
+    output_dir):
+    
+    remove_file_if_exists(output_dir + '/transcript_names.txt')
+    remove_file_if_exists(output_dir + '/num_of_reads.txt')
+
+    command = "Rscript --vanilla " \
+        + script_path + " " \
+        + str(number_of_transcripts) + " " \
+        + str(readlen) + " " \
+        + str(error_rate) + " " \
+        + str(coverage) + " " \
+        + str(output_dir) + " " \
+
+    execute_command(command, verbose)
+
+    transcript_names = np.genfromtxt(
+        output_dir + '/transcript_names.txt',
+        names = None,
+        dtype= None,
+        usecols = (0))
+    num_of_reads = np.genfromtxt(
+        output_dir + '/num_of_reads.txt',
+        names = None,
+        dtype= None,
+        usecols = (0))
+
+    ground_truth_map = dict(zip(transcript_names, num_of_reads))
+
+    return ground_truth_map
+
 
 def get_index_dir_by_toolname(tool_name):
     return project_dir + "/" + tool_name + "/index"
@@ -53,35 +83,49 @@ def get_output_dir_by_toolname(tool_name):
     return project_dir + "/" + tool_name + "/output"
 
 
-def run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
-    print("quant with k=" + str(k) + "...")
+def run_with_k_for_all_for_all(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
+    print_and_log("quant with k=" + str(k) + "...")
 
     # salmon
-    print("run salmon...")
+    print_and_log("run salmon...")
     salmon_quantificatoin_map = salmon.run_salmon(k, transcriptome_reference_file, get_index_dir_by_toolname("salmon"), simulated_reads_dir, get_output_dir_by_toolname("salmon"))
     salmon_accuracy = get_average_accuracy(ground_truth_map, salmon_quantificatoin_map)
    
     # sailfish
-    print("run sailfish...")
+    print_and_log("run sailfish...")
     sailfish_quantificatoin_map = sailfish.run_sailfish(k, transcriptome_reference_file, get_index_dir_by_toolname("sailfish"), simulated_reads_dir, get_output_dir_by_toolname("sailfish"))
     sailfish_accuracy = get_average_accuracy(ground_truth_map, sailfish_quantificatoin_map)
        
     # kallisto, max allowed k=31
-    print("run kallisto...")
+    print_and_log("run kallisto...")
     kallisto_quantificatoin_map = kallisto.run_kallisto(k, transcriptome_reference_file, get_index_dir_by_toolname("kallisto"), simulated_reads_dir, get_output_dir_by_toolname("kallisto"))
     kallisto_accuracy = get_average_accuracy(ground_truth_map, kallisto_quantificatoin_map)
     
     # rnaskim
-    print("run rnaskim...")
+    print_and_log("run rnaskim...")
     rnaskim_quantificatoin_map = rnaskim.run_RNASkim(k, transcriptome_reference_file, get_index_dir_by_toolname("rnaskim"), simulated_reads_dir, get_output_dir_by_toolname("rnaskim"), 4)
     rnaskim_accuracy = get_average_accuracy(ground_truth_map, rnaskim_quantificatoin_map)
   
-    print("** salmon_accuracy=\t" + str(salmon_accuracy))
-    print("** sailfish_accuracy=\t" + str(sailfish_accuracy))
-    print("** kallisto_accuracy=\t" + str(kallisto_accuracy))
-    print("** rnaskim_accuracy=\t" + str(rnaskim_accuracy))
+    print_and_log("\tsalmon_accuracy=\t" + str(salmon_accuracy))
+    print_and_log("\tsailfish_accuracy=\t" + str(sailfish_accuracy))
+    print_and_log("\tkallisto_accuracy=\t" + str(kallisto_accuracy))
+    print_and_log("\trnaskim_accuracy=\t" + str(rnaskim_accuracy))
 
     return salmon_accuracy, sailfish_accuracy, kallisto_accuracy, rnaskim_accuracy
+
+
+def convert_tool_name_to_module_name(tool_name):
+    return tool_name + "_utils"
+
+
+def run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
+    print_and_log("quant with {0}, k={1}...".format(tool_name,str(k)))
+    tool = __import__(convert_tool_name_to_module_name(tool_name), fromlist=[''])
+    tool.init(verbose)
+    quantificatoin_map = tool.run(k, transcriptome_reference_file, get_index_dir_by_toolname(tool_name), simulated_reads_dir, get_output_dir_by_toolname(tool_name))
+    accuracy = get_average_accuracy(ground_truth_map, quantificatoin_map)
+    print_and_log("\t{0}_accuracy={1}".format(tool_name, str(accuracy)))
+    return accuracy
 
 
 def plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies):
@@ -116,7 +160,7 @@ def plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, s
 
 
 def plot_result_line_for_tool(tool_name, plot_type, labels, k_range, accuracy_matrix):
-    colors = ['r','g','b','y','m','c','k']
+    colors = ['r','g','b','y','m','c','k', 'pink']
     plt.figure()
     n_groups = len(k_range)
     index = np.arange(n_groups)
@@ -133,101 +177,162 @@ def plot_result_line_for_tool(tool_name, plot_type, labels, k_range, accuracy_ma
         besk_k = k_range[np.argmax(current_array)]
         best_accuracy = max(current_array)
         label = "{0}={1},bestK={2},accuracy={3:.4f}%".format(plot_type,str(labels[i]),str(besk_k),best_accuracy)
-        plt.plot(index, current_array, colors[i]+'o-', label=label)
+        plt.plot(index, current_array, color = colors[i], ls='-', marker='o', label=label)
     
     plt.xticks(index, k_range)
     plt.legend()
     plt.savefig(project_dir + "/" + tool_name + "_" + plot_type + "_plot")
 
 
-def run_with_simulation_parameters(number_of_transcripts, readlen, error_rate, coverage):
+# def run_with_simulation_parameters_for_all(number_of_transcripts, readlen, error_rate, coverage):
+#     print_and_log("Simulation settings:")
+#     print_and_log('{:>50}  {:>12}'.format('number_of_transctipts:', str(number_of_transcripts)))
+#     print_and_log('{:>50}  {:>12}'.format('readlen:', str(readlen)))
+#     print_and_log('{:>50}  {:>12}'.format('error_rate:', str(error_rate)))
+#     print_and_log('{:>50}  {:>12}'.format('coverage:', str(coverage)))
+#     ground_truth_map = simulate_reads(simulation_script_path, number_of_transcripts, readlen, error_rate, coverage, project_dir)
+#     print_and_log('{:>50}  {:>12}'.format('Total Number of Reads:', str(sum(ground_truth_map.values()))))
+#     print_and_log("")
 
+#     salmon_accuracies = []
+#     sailfish_accuracies = []
+#     kallisto_accuracies = []
+#     rnaskim_accuracies = []
+
+#     for k in k_range:
+#         salmon_accuracy, sailfish_accuracy, kallisto_accuracy, rnaskim_accuracy = run_with_k_for_all(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
+#         salmon_accuracies.append(salmon_accuracy)
+#         sailfish_accuracies.append(sailfish_accuracy)
+#         kallisto_accuracies.append(kallisto_accuracy)  
+#         rnaskim_accuracies.append(rnaskim_accuracy)  
+#     plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies)
+
+#     return salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies
+
+
+def run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, readlen, error_rate, coverage):
+    global log_file_name
+    log_file_name = "{0}_readlen{1}_error{2:.0f}_coverage{3}".format(tool_name,str(readlen),error_rate*1000.0,str(coverage))
+    print("\n\n")
+    print_and_log("Simulation settings:")
+    print_and_log('{:>30}  {:>8}'.format('number_of_transctipts:', str(number_of_transcripts)))
+    print_and_log('{:>30}  {:>8}'.format('readlen:', str(readlen)))
+    print_and_log('{:>30}  {:>8}'.format('error_rate:', str(error_rate)))
+    print_and_log('{:>30}  {:>8}'.format('coverage:', str(coverage)))
     ground_truth_map = simulate_reads(simulation_script_path, number_of_transcripts, readlen, error_rate, coverage, project_dir)
-    print("Simulation settings:")
-    print("\tTotal Number of Reads = " + str(sum(ground_truth_map.values())))
-    print("\tnumber_of_transctipts = " + str(number_of_transcripts))
-    print("\treadlen = " + str(readlen))
-    print("\terror_rate = " + str(error_rate))
-    print("\tcoverage = " + str(coverage))
+    print_and_log('{:>30}  {:>8}'.format('Total Number of Reads:', str(sum(ground_truth_map.values()))))
+    print_and_log("")
 
-    salmon_accuracies = []
-    sailfish_accuracies = []
-    kallisto_accuracies = []
-    rnaskim_accuracies = []
-
+    accuracies = []
 
     for k in k_range:
-        salmon_accuracy, sailfish_accuracy, kallisto_accuracy, rnaskim_accuracy = run_with_k(k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
-        salmon_accuracies.append(salmon_accuracy)
-        sailfish_accuracies.append(sailfish_accuracy)
-        kallisto_accuracies.append(kallisto_accuracy)  
-        rnaskim_accuracies.append(rnaskim_accuracy)  
-    plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies)
+        accuracy = run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
+        accuracies.append(accuracy) 
+    # plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies)
 
-    return salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies
+    return accuracies
+
+
+def run_coverage_for_tool(tool_name, coverage_range, k_range):
+    accuracy_matrix = []
+
+    for coverage in coverage_range:
+        accuracies = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, default_error_rate, coverage)
+        accuracy_matrix.append(accuracies)
+    plot_result_line_for_tool(tool_name, "coverage", coverage_range, k_range, accuracy_matrix)
+
+
+def run_error_rate_for_tool(tool_name, error_rate_range, k_range):
+    accuracy_matrix = []
+
+    for error_rate in error_rate_range:
+        accuracies = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, error_rate, default_coverage)
+        accuracy_matrix.append(accuracies)
+    plot_result_line_for_tool(tool_name, "error_rate", error_rate_range, k_range, accuracy_matrix)
+
+
+def run_readlen_for_tool(tool_name, readlen_range, k_range):
+    accuracy_matrix = []
+
+    for readlen in readlen_range:
+        accuracies = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, readlen, default_error_rate, default_coverage)
+        accuracy_matrix.append(accuracies)
+    plot_result_line_for_tool(tool_name, "readlen", readlen_range, k_range, accuracy_matrix)
+
+
+
+def init():
+    parser = OptionParser()
+    parser.add_option("-t", "--transcript", dest="number_of_transcripts", default=10,
+        action="store", type="int",
+        help="int, number of transcripts to use in the simulation")
+
+    parser.add_option("-q", "--quiet",
+        action="store_false", dest="verbose", default=True,
+        help="don't print execution outputs")
+
+    (options, args) = parser.parse_args()
+
+
+    global number_of_transcripts
+    global project_dir
+    global simulation_script_path
+    global transcriptome_reference_file
+    global simulated_reads_dir
+    global verbose
+    global log_dir
+
+    number_of_transcripts = options.number_of_transcripts
+    verbose = options.verbose
+
+    OS = sys.platform
+    # mac
+    if(OS=="darwin"):
+        project_dir = "/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project"
+        simulation_script_path = project_dir + "/simulation_script.R"
+    #ubuntu
+    else:
+        project_dir = "/home/ubuntu/cs229"
+        simulation_script_path = project_dir + "/CS229S_Project/simulation_script.R"
+
+    transcriptome_reference_file = project_dir + "/chr22_small.fa"
+    simulated_reads_dir = project_dir + "/simulated_reads"
+
+    start_time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    log_dir = project_dir + "/logs/" +start_time
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    print("\nRunning on platform: " + OS + "\n")
+    print("Script Settings:")
+    print('{:>30}  {:<50}'.format('Verbose:', str(verbose)))
+    print('{:>30}  {:<50}'.format('Project Directory:', str(project_dir)))
+    print('{:>30}  {:<50}'.format('Simulation Script:', str(simulation_script_path)))
+    print('{:>30}  {:<50}'.format('Transcript Reference:', str(transcriptome_reference_file)))
+    print('{:>30}  {:<50}'.format('Simulated Reads Directory:', str(simulated_reads_dir)))
+    print("")
 
 
 def main():
-    # loop coverage
-    salmon_accuracy_matrix = []
-    kallisto_accuracy_matrix = []
-    sailfish_accuracy_matrix = []
-    rnaskim_accuracy_matrix = []
+    init()
+    ## test ranges
+    k_range = np.arange(29,33,2)
+    coverage_range = np.arange(20,40,10)
+    error_rate_range = np.arange(0.005,0.02,0.005)
+    readlen_range = np.arange(80,110,10)
 
-    for coverage in coverage_range:
-        salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies = run_with_simulation_parameters(number_of_transcripts, default_readlen, default_error_rate, coverage)
-        salmon_accuracy_matrix.append(salmon_accuracies)
-        sailfish_accuracy_matrix.append(sailfish_accuracies)
-        kallisto_accuracy_matrix.append(kallisto_accuracies)
-        rnaskim_accuracy_matrix.append(rnaskim_accuracies)
-    plot_result_line_for_tool("salmon", "coverage", coverage_range, k_range, salmon_accuracy_matrix)
-    plot_result_line_for_tool("sailfish", "coverage", coverage_range, k_range, sailfish_accuracy_matrix)
-    plot_result_line_for_tool("kallisto", "coverage", coverage_range, k_range, kallisto_accuracy_matrix)
-    plot_result_line_for_tool("rnaskim", "coverage", coverage_range, k_range, rnaskim_accuracy_matrix)
+    ## real ranges
+    # k_range = np.arange(21,32,2)
+    # coverage_range = np.arange(10,50,10)
+    # error_rate_range = np.arange(0.0,0.08,0.01)
+    # readlen_range = np.arange(70,130,10)
 
 
-    # loop error_rate
-    salmon_accuracy_matrix = []
-    kallisto_accuracy_matrix = []
-    sailfish_accuracy_matrix = []
-    rnaskim_accuracy_matrix = []
-
-    for error_rate in error_rate_range:
-        salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies = run_with_simulation_parameters(number_of_transcripts, default_readlen, error_rate, default_coverage)
-        salmon_accuracy_matrix.append(salmon_accuracies)
-        sailfish_accuracy_matrix.append(sailfish_accuracies)
-        kallisto_accuracy_matrix.append(kallisto_accuracies)
-        rnaskim_accuracy_matrix.append(rnaskim_accuracies)
-    plot_result_line_for_tool("salmon", "error_rate", error_rate_range, k_range, salmon_accuracy_matrix)
-    plot_result_line_for_tool("sailfish", "error_rate", error_rate_range, k_range, sailfish_accuracy_matrix)
-    plot_result_line_for_tool("kallisto", "error_rate", error_rate_range, k_range, kallisto_accuracy_matrix)
-    plot_result_line_for_tool("rnaskim", "error_rate", error_rate_range, k_range, rnaskim_accuracy_matrix)
-
-
-    # loop readlen
-    salmon_accuracy_matrix = []
-    kallisto_accuracy_matrix = []
-    sailfish_accuracy_matrix = []
-    rnaskim_accuracy_matrix = []
-
-    for readlen in readlen_range:
-        salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies = run_with_simulation_parameters(number_of_transcripts, readlen, default_error_rate, default_coverage)
-        salmon_accuracy_matrix.append(salmon_accuracies)
-        sailfish_accuracy_matrix.append(sailfish_accuracies)
-        kallisto_accuracy_matrix.append(kallisto_accuracies)
-        rnaskim_accuracy_matrix.append(rnaskim_accuracies)
-    plot_result_line_for_tool("salmon", "readlen", readlen_range, k_range, salmon_accuracy_matrix)
-    plot_result_line_for_tool("sailfish", "readlen", readlen_range, k_range, sailfish_accuracy_matrix)
-    plot_result_line_for_tool("kallisto", "readlen", readlen_range, k_range, kallisto_accuracy_matrix)
-    plot_result_line_for_tool("rnaskim", "readlen", readlen_range, k_range, rnaskim_accuracy_matrix)
-
-    # # loop error_rate
-    # for error_rate in error_rate_range:
-    #     run_with_simulation_parameters(number_of_transcripts, default_readlen, error_rate, default_coverage)
-
-    # # loop read_len
-    # for readlen in readlen_range:
-    #     run_with_simulation_parameters(number_of_transcripts, readlen, default_coverage, default_coverage)
+    tools = ["kallisto"]
+    for tool_name in tools:
+        run_coverage_for_tool(tool_name, coverage_range, k_range)
+        run_error_rate_for_tool(tool_name, error_rate_range, k_range)
+        run_readlen_for_tool(tool_name, readlen_range, k_range)
 
 
 if __name__ == "__main__":

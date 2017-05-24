@@ -13,18 +13,19 @@ def remove_file_if_exists(file_path):
         pass
 
 
-def get_command_output(command_string):
+def get_command_output(command_string, verbose):
 
     command_args = command_string.split()
-    #print("Executing command:\n" + command_string + "\n")
+    if verbose:
+        print("Executing command:\n" + command_string + "\n")
     output = sub.check_output(command_args)
     return output.decode("utf-8")
 
 
 def execute_command(command_string, verbose):
     command_args = command_string.split()
-    print("Executing command:\n" + command_string + "\n")
-    #print(command_args)
+    if verbose:
+        print("Executing command:\n" + command_string + "\n")
     try:
         FNULL = open(os.devnull, 'w')
         #sub.check_call(command_args)        
@@ -44,43 +45,6 @@ def cleanup_dir(target_dir):
             elif os.path.isdir(file_path): shutil.rmtree(file_path)
         except Exception as e:
             print(e)
-
-
-def simulate_reads(
-    script_path, 
-    number_of_transcripts, 
-    readlen, 
-    error_rate, 
-    coverage, 
-    output_dir):
-    
-    remove_file_if_exists(output_dir + '/transcript_names.txt')
-    remove_file_if_exists(output_dir + '/num_of_reads.txt')
-
-    command = "Rscript --vanilla " \
-        + script_path + " " \
-        + str(number_of_transcripts) + " " \
-        + str(readlen) + " " \
-        + str(error_rate) + " " \
-        + str(coverage) + " " \
-        + str(output_dir) + " " \
-
-    execute_command(command, True)
-
-    transcript_names = np.genfromtxt(
-        output_dir + '/transcript_names.txt',
-        names = None,
-        dtype= None,
-        usecols = (0))
-    num_of_reads = np.genfromtxt(
-        output_dir + '/num_of_reads.txt',
-        names = None,
-        dtype= None,
-        usecols = (0))
-
-    ground_truth_map = dict(zip(transcript_names, num_of_reads))
-
-    return ground_truth_map
 
 
 def remove_gene_id_from_map(old_map):

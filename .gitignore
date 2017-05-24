@@ -5,7 +5,7 @@
 *.pyc
 
 #simulation reads
-
+**/simulated_reads/*
 *.pyc
 
 kallisto

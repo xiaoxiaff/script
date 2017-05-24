@@ -2,6 +2,12 @@ from general_utils import execute_command
 import numpy as np
 # https://pachterlab.github.io/kallisto/manual
 
+
+verbose = False
+def init(v):
+    verbose = v
+
+
 # k: default and maximum k is 31, must be odd
 def build_index_with_k(transcriptome_reference_file, k, index_output_path):
 	command = "kallisto index -i " \
@@ -11,7 +17,7 @@ def build_index_with_k(transcriptome_reference_file, k, index_output_path):
 		+ " " \
 		+ transcriptome_reference_file
 	
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 def quant(index_dir, output_dir, sample_pair1, sample_pair2):
@@ -24,7 +30,7 @@ def quant(index_dir, output_dir, sample_pair1, sample_pair2):
 		+ " " \
 		+ sample_pair2 \
 
-	execute_command(command, True)
+	execute_command(command, verbose)
 
 
 def get_result_dict(result_dir):       
@@ -44,7 +50,7 @@ def get_result_dict(result_dir):
     return res
 
 
-def run_kallisto(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
+def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
     build_index_with_k(transcriptome_reference_file, k, index_output_dir)
 
     res_dict = dict()
