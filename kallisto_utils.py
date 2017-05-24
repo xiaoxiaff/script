@@ -25,7 +25,7 @@ def build_index_with_k(transcriptome_reference_file, k, index_output_path):
 def quant(index_dir, output_dir, sample_pair1, sample_pair2):
 	command = "kallisto quant -i " \
 		+ index_dir \
-		+ " -o -t 4 " \
+		+ " -t 4 -o " \
 		+ output_dir \
 		+ " " \
 		+ sample_pair1 \

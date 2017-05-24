@@ -250,12 +250,44 @@ def run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transc
     accuracies = []
     runtimes = []
     for k in k_range:
+        if tool_name=="kallisto" and k>31:
+            continue
         accuracy, runtime_ms = run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
         accuracies.append(accuracy) 
         runtimes.append(runtime_ms)
     # plot_result_all(readlen, error_rate, coverage, k_range, salmon_accuracies, sailfish_accuracies, kallisto_accuracies, rnaskim_accuracies)
 
     return accuracies, runtimes
+
+
+def get_np_data_file_name(tool_name, loop_type, file_type):
+    return "{0}/{1}/{2}_{3}_{4}_matrix".format(project_dir,'np_data',tool_name,loop_type, file_type)
+
+
+def run_loop_for_tool(tool_name, loop_type, loop_range, k_range):
+    accuracy_matrix = []
+    runtime_matrix = []
+    current_readlen = default_readlen
+    current_coverage = default_coverage
+    current_error_rate = default_error_rate
+
+    for loop_value in loop_range:
+        if(loop_type=="coverage"):
+            current_coverage = loop_value
+        elif(loop_type=="error_rate"):
+            current_error_rate = loop_value
+        elif(loop_type=="readlen"):
+            current_readlen = loop_value
+
+        accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, current_readlen, current_error_rate, current_coverage)
+        accuracy_matrix.append(accuracies)
+        runtime_matrix.append(runtimes)
+
+    accuracy_np_data_file_name = get_np_data_file_name(tool_name, loop_type, 'accuracy')
+    runtime_np_data_file_name = get_np_data_file_name(tool_name, loop_type, 'runtime')
+
+    np.save(accuracy_np_data_file_name, accuracy_matrix)
+    np.save(runtime_np_data_file_name, runtime_matrix)
 
 
 def run_coverage_for_tool(tool_name, coverage_range, k_range):
@@ -266,8 +298,12 @@ def run_coverage_for_tool(tool_name, coverage_range, k_range):
         accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, default_error_rate, coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
-    plot_accuracy_for_tool(tool_name, "coverage", coverage_range, k_range, accuracy_matrix)
-    plot_runtime_for_tool(tool_name, "coverage", coverage_range, k_range, runtime_matrix)
+
+    accuracy_np_data_file = get_np_data_file_name(tool_name, 'coverage', 'accuracy')
+    runtime_np_data_file = get_np_data_file_name(tool_name, 'coverage', 'runtime')
+
+    np.save(accuracy_np_data_file,accuracy_matrix)
+    np.save(runtime_np_data_file,runtime_matrix)
 
 
 def run_error_rate_for_tool(tool_name, error_rate_range, k_range):
@@ -278,8 +314,12 @@ def run_error_rate_for_tool(tool_name, error_rate_range, k_range):
         accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, error_rate, default_coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
-    plot_accuracy_for_tool(tool_name, "error_rate", error_rate_range, k_range, accuracy_matrix)
-    plot_runtime_for_tool(tool_name, "error_rate", error_rate_range, k_range, runtime_matrix)
+
+    accuracy_np_data_file = get_np_data_file_name(tool_name, 'error_rate', 'accuracy')
+    runtime_np_data_file = get_np_data_file_name(tool_name, 'error_rate', 'runtime')
+
+    np.save(accuracy_np_data_file,accuracy_matrix)
+    np.save(runtime_np_data_file,runtime_matrix)
 
 
 def run_readlen_for_tool(tool_name, readlen_range, k_range):
@@ -290,8 +330,12 @@ def run_readlen_for_tool(tool_name, readlen_range, k_range):
         accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, readlen, default_error_rate, default_coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
-    plot_accuracy_for_tool(tool_name, "readlen", readlen_range, k_range, accuracy_matrix)
-    plot_runtime_for_tool(tool_name, "readlen", readlen_range, k_range, runtime_matrix)
+
+    accuracy_np_data_file = get_np_data_file_name(tool_name, 'readlen', 'accuracy')
+    runtime_np_data_file = get_np_data_file_name(tool_name, 'readlen', 'runtime')
+
+    np.save(accuracy_np_data_file,accuracy_matrix)
+    np.save(runtime_np_data_file,runtime_matrix)
 
 
 def init():
@@ -346,26 +390,50 @@ def init():
     print("")
 
 
+
+def print_result_matrix(k_range, result_matrix):
+    for k in k_range:
+        print("{:>20}".format(k), end='')
+    print("")
+    for array in result_matrix:
+        for result in array:
+            print("{:>20}".format(result), end='')
+        print("")
+
+
 def main():
     init()
     ## test ranges
-    # k_range = np.arange(29,33,2)
-    # coverage_range = np.arange(20,40,10)
-    # error_rate_range = np.arange(0.005,0.02,0.005)
-    # readlen_range = np.arange(80,110,10)
+    k_range = np.arange(31,35,2)
+    coverage_range = np.arange(20,40,10)
+    error_rate_range = np.arange(0.005,0.02,0.005)
+    readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    k_range = np.arange(21,32,2)
-    coverage_range = np.arange(10,50,10)
-    error_rate_range = np.arange(0.0,0.08,0.01)
-    readlen_range = np.arange(70,130,10)
+    # k_range = np.arange(21,40,2)
+    # coverage_range = np.arange(10,50,10)
+    # error_rate_range = np.arange(0.0,0.08,0.01)
+    # readlen_range = np.arange(70,130,10)
 
-    tools = ["salmon","sailfish","kallisto"]
+    tools = ["salmon"]
     for tool_name in tools:
-        run_coverage_for_tool(tool_name, coverage_range, k_range)
-        run_error_rate_for_tool(tool_name, error_rate_range, k_range)
-        run_readlen_for_tool(tool_name, readlen_range, k_range)
+        run_loop_for_tool(tool_name, "coverage", coverage_range, k_range)
+        accuracy_np_data_file_name = get_np_data_file_name(tool_name,"coverage","accuracy")
+        runtime_np_data_file = get_np_data_file_name(tool_name,"coverage","runtime")
+        print_result_matrix(k_range, np.load(accuracy_np_data_file_name+'.npy'))
+        print_result_matrix(k_range, np.load(runtime_np_data_file+'.npy'))
 
+        run_loop_for_tool(tool_name, "error_rate", error_rate_range, k_range)
+        run_loop_for_tool(tool_name, "readlen", readlen_range, k_range)
+
+        # accuracy_np_data_file = "{0}/{1}/{2}_{3}_{4}_matrix".format(project_dir,'np_data',tool_name,'coverage', 'accuracy')
+        # runtime_np_data_file = "{0}/{1}/{2}_{3}_{4}_matrix".format(project_dir,'np_data',tool_name,'coverage', 'runtime')
+        # accuracy_matrix = np.load(accuracy_np_data_file+'.npy')
+        # runtime_matrix = np.load(runtime_np_data_file+'.npy')
+
+        # plot_accuracy_for_tool(tool_name, "coverage", coverage_range, k_range, accuracy_matrix)
+        # plot_runtime_for_tool(tool_name, "coverage", coverage_range, k_range, runtime_matrix)
+        # print_result_matrix(k_range, accuracy_matrix)
 
 if __name__ == "__main__":
     main()
