@@ -26,7 +26,7 @@ def quant_with_k(k,sample_pair1,sample_pair2, index_dir, output_dir):
         + sample_pair1 \
         + " -2 " \
         + sample_pair2 \
-        + " -p 8 -o " \
+        + " -p 4 -o " \
         + output_dir \
         + " -k " \
         + str(k)

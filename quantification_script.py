@@ -349,18 +349,18 @@ def init():
 def main():
     init()
     ## test ranges
-    k_range = np.arange(29,33,2)
-    coverage_range = np.arange(20,40,10)
-    error_rate_range = np.arange(0.005,0.02,0.005)
-    readlen_range = np.arange(80,110,10)
+    # k_range = np.arange(29,33,2)
+    # coverage_range = np.arange(20,40,10)
+    # error_rate_range = np.arange(0.005,0.02,0.005)
+    # readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    # k_range = np.arange(21,32,2)
-    # coverage_range = np.arange(10,50,10)
-    # error_rate_range = np.arange(0.0,0.08,0.01)
-    # readlen_range = np.arange(70,130,10)
+    k_range = np.arange(21,32,2)
+    coverage_range = np.arange(10,50,10)
+    error_rate_range = np.arange(0.0,0.08,0.01)
+    readlen_range = np.arange(70,130,10)
 
-    tools = ["kallisto"]
+    tools = ["salmon","kallisto"]
     for tool_name in tools:
         run_coverage_for_tool(tool_name, coverage_range, k_range)
         run_error_rate_for_tool(tool_name, error_rate_range, k_range)
