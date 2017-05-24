@@ -404,24 +404,24 @@ def print_result_matrix(k_range, result_matrix):
 def main():
     init()
     ## test ranges
-    k_range = np.arange(31,35,2)
-    coverage_range = np.arange(20,40,10)
-    error_rate_range = np.arange(0.005,0.02,0.005)
-    readlen_range = np.arange(80,110,10)
+    # k_range = np.arange(31,35,2)
+    # coverage_range = np.arange(20,40,10)
+    # error_rate_range = np.arange(0.005,0.02,0.005)
+    # readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    # k_range = np.arange(21,40,2)
-    # coverage_range = np.arange(10,50,10)
-    # error_rate_range = np.arange(0.0,0.08,0.01)
-    # readlen_range = np.arange(70,130,10)
+    k_range = np.arange(21,40,2)
+    coverage_range = np.arange(10,50,10)
+    error_rate_range = np.arange(0.0,0.08,0.01)
+    readlen_range = np.arange(70,130,10)
 
-    tools = ["salmon"]
+    tools = ["salmon", "sailfish", "kallisto"]
     for tool_name in tools:
         run_loop_for_tool(tool_name, "coverage", coverage_range, k_range)
-        accuracy_np_data_file_name = get_np_data_file_name(tool_name,"coverage","accuracy")
-        runtime_np_data_file = get_np_data_file_name(tool_name,"coverage","runtime")
-        print_result_matrix(k_range, np.load(accuracy_np_data_file_name+'.npy'))
-        print_result_matrix(k_range, np.load(runtime_np_data_file+'.npy'))
+        # accuracy_np_data_file_name = get_np_data_file_name(tool_name,"coverage","accuracy")
+        # runtime_np_data_file = get_np_data_file_name(tool_name,"coverage","runtime")
+        # print_result_matrix(k_range, np.load(accuracy_np_data_file_name+'.npy'))
+        # print_result_matrix(k_range, np.load(runtime_np_data_file+'.npy'))
 
         run_loop_for_tool(tool_name, "error_rate", error_rate_range, k_range)
         run_loop_for_tool(tool_name, "readlen", readlen_range, k_range)
