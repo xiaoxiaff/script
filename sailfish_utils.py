@@ -25,7 +25,7 @@ def quant_with_k(sample_pair1, sample_pair2, index_dir, output_dir):
     command = "sailfish quant -i " \
         + index_dir \
         + " -l " \
-        + "T=PE:O=>>:S=SA" \
+        + "T=PE:O=><:S=SA" \
         + " -1 " \
         + sample_pair1 \
         + " -2 " \
@@ -70,6 +70,7 @@ def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
             sample_pair2 = sample_dir + '/sample_' + str(i) + '_2.fasta'
 
         result_output_dir = output_dir + '/sample' + str(i) + '_result'
+        cleanup_dir(result_output_dir)
         quant_with_k(sample_pair1, sample_pair2, index_dir, result_output_dir)
 
         sample_dict = get_result_dict(result_output_dir)
