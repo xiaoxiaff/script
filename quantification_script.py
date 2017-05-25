@@ -88,7 +88,7 @@ def get_output_dir_by_toolname(tool_name):
 
 
 def convert_tool_name_to_module_name(tool_name):
-    return tool_name + "_utils"
+    return tool_name + "_adapter"
 
 
 def run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir):
