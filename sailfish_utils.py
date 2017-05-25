@@ -25,7 +25,7 @@ def quant_with_k(sample_pair1, sample_pair2, index_dir, output_dir):
     command = "sailfish quant -i " \
         + index_dir \
         + " -l " \
-        + "T=PE:O=><:S=SA" \
+        + "T=PE:O=>>:S=SA" \
         + " -1 " \
         + sample_pair1 \
         + " -2 " \
