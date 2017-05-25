@@ -132,8 +132,8 @@ def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
         else:
             sample_pair1 = sample_dir + '/sample_' + str(i)+ '_1.fasta'
             sample_pair2 = sample_dir + '/sample_' + str(i) + '_2.fasta'
-
         result_output_dir = output_dir + '/sample' + str(i) + '_result'
+        cleanup_dir(result_output_dir)
         count_file = result_output_dir + "/clustered_gene.fa.cf"
         estimation_file = result_output_dir + "/estimation.txt"
 
