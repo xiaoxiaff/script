@@ -114,7 +114,7 @@ def get_result_dict(result_dir):
 def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
     cleanup_dir(index_dir)
     time1 = time.time()
-    numthreads = 4
+    numthreads = 1
     cluster_output = index_dir + "/clustered.fa"
     index_file = index_dir + "/clustered_gene.fa.pb"
     selected_keys_file = index_dir + "/clustered_gene.fa.sk"
