@@ -263,8 +263,13 @@ def save_result(tool_name, loop_type, k_range, loop_range):
     runtime_np_data_file = get_np_data_file_name(tool_name,loop_type,"runtime")
     accuracy_matrix = np.load(accuracy_np_data_file_name+'.npy')
     runtime_matrix = np.load(runtime_np_data_file+'.npy')
+    while(len(k_range)!=len(accuracy_matrix[0])):
+        k_range = np.delete(k_range,len(k_range)-1)
+
     save_result_matrix_as_csv(tool_name,"accuracy",loop_type,k_range,loop_range,accuracy_matrix)
     save_result_matrix_as_csv(tool_name,"runtime",loop_type,k_range,loop_range,runtime_matrix)
+    plot_accuracy_for_tool(tool_name, loop_type, loop_range, k_range, accuracy_matrix)
+    plot_runtime_for_tool(tool_name, loop_type, loop_range, k_range, runtime_matrix)
 
 
 def main():
@@ -286,14 +291,11 @@ def main():
     ranges_dict["error_rate"] = error_rate_range
     ranges_dict["readlen"] = readlen_range
 
-    tools = ["salmon", "sailfish"]
+    tools = ["salmon", "kallisto", "sailfish"]
     for tool_name in tools:
         for loop_type in ranges_dict.keys():
             # run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
             save_result(tool_name,loop_type,k_range,ranges_dict[loop_type])
-
-        # plot_accuracy_for_tool(tool_name, "coverage", coverage_range, k_range, accuracy_matrix)
-        # plot_runtime_for_tool(tool_name, "coverage", coverage_range, k_range, runtime_matrix)
 
 
 if __name__ == "__main__":
