@@ -121,7 +121,7 @@ def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
 
     cluster(transcriptome_reference_file, cluster_output, 60, numthreads)
     build_index(cluster_output, index_file, k, numthreads)
-    select(index_file, selected_keys_file)
+    select_with_k(index_file, selected_keys_file, k)
 
 
     res_dict = dict()
