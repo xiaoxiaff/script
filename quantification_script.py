@@ -252,6 +252,8 @@ def run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transc
     for k in k_range:
         if tool_name=="kallisto" and k>31:
             continue
+        if tool_name=="sailfish" and k>31:
+            continue
         accuracy, runtime_ms = run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
         accuracies.append(accuracy) 
         runtimes.append(runtime_ms)
@@ -415,7 +417,7 @@ def main():
     error_rate_range = np.arange(0.0,0.08,0.01)
     readlen_range = np.arange(70,130,10)
 
-    tools = ["salmon", "sailfish", "kallisto"]
+    tools = ["sailfish", "kallisto"]
     for tool_name in tools:
         run_loop_for_tool(tool_name, "coverage", coverage_range, k_range)
         # accuracy_np_data_file_name = get_np_data_file_name(tool_name,"coverage","accuracy")
