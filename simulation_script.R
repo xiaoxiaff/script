@@ -43,7 +43,7 @@ fasta = readDNAStringSet(fasta_file)
 # subset the FASTA file to first [number_of_transcripts] transcripts
 small_fasta = fasta[1:number_of_transcripts]
 small_fasta_file_location = paste(outdir, "/chr22_small.fa", sep="")
-writeXStringSet(small_fasta, small_fasta_file_location, width=100000)
+writeXStringSet(small_fasta, small_fasta_file_location, width=20000)
 
 names = names(small_fasta)
 
