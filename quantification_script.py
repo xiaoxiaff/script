@@ -286,10 +286,10 @@ def main():
     ranges_dict["error_rate"] = error_rate_range
     ranges_dict["readlen"] = readlen_range
 
-    tools = ["salmon", "sailfish"]
+    tools = ["sailfish"]
     for tool_name in tools:
         for loop_type in ranges_dict.keys():
-            # run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
+            run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
             save_result(tool_name,loop_type,k_range,ranges_dict[loop_type])
 
         # plot_accuracy_for_tool(tool_name, "coverage", coverage_range, k_range, accuracy_matrix)
