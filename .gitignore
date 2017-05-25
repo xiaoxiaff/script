@@ -10,6 +10,7 @@
 
 kallisto
 RNASkim
+rnaskim
 salmon
 sailfish
 
@@ -23,3 +24,6 @@ transcript_names.txt
 
 logs
 np_data
+ec2_results
+result
+result.zip
