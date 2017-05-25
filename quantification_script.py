@@ -275,16 +275,16 @@ def save_result(tool_name, loop_type, k_range, loop_range):
 def main():
     init()
     ## test ranges
-    k_range = np.arange(31,35,2)
-    coverage_range = np.arange(20,40,10)
-    error_rate_range = np.arange(0.005,0.02,0.005)
-    readlen_range = np.arange(80,110,10)
+    # k_range = np.arange(31,35,2)
+    # coverage_range = np.arange(20,40,10)
+    # error_rate_range = np.arange(0.005,0.02,0.005)
+    # readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    # k_range = np.arange(21,40,2)
-    # coverage_range = np.arange(10,50,10)
-    # error_rate_range = np.arange(0.0,0.08,0.01)
-    # readlen_range = np.arange(70,130,10)
+    k_range = np.arange(21,76,2)
+    coverage_range = np.arange(10,50,10)
+    error_rate_range = np.arange(0.0,0.08,0.01)
+    readlen_range = np.arange(70,130,10)
 
     ranges_dict = {}
     ranges_dict["coverage"] = coverage_range
