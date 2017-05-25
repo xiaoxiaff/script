@@ -119,7 +119,7 @@ def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
     index_file = index_dir + "/clustered_gene.fa.pb"
     selected_keys_file = index_dir + "/clustered_gene.fa.sk"
 
-    cluster(transcriptome_reference_file, cluster_output, k, numthreads)
+    cluster(transcriptome_reference_file, cluster_output, 60, numthreads)
     build_index(cluster_output, index_file, k, numthreads)
     select(index_file, selected_keys_file)
 
