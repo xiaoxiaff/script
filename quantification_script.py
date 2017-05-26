@@ -281,7 +281,7 @@ def main():
     # readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    k_range = np.arange(21,76,2)
+    k_range = np.arange(21,76,1)
     coverage_range = np.arange(10,50,10)
     error_rate_range = np.arange(0.0,0.08,0.01)
     readlen_range = np.arange(70,130,10)
@@ -291,7 +291,7 @@ def main():
     ranges_dict["error_rate"] = error_rate_range
     ranges_dict["readlen"] = readlen_range
 
-    tools = ["rnaskim"]
+    tools = ["rnaskim", "salmon"]
     for tool_name in tools:
         for loop_type in ranges_dict.keys():
             run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
