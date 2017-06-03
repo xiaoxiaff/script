@@ -281,15 +281,17 @@ def main():
     # readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    k_range = np.arange(10,76,1)
-    coverage_range = np.arange(10,50,10)
+    k_range = np.arange(11,33,2)
+    # coverage_range = np.arange(10,50,10)
+    coverage_range = [1,10,20,30,40]
+
     error_rate_range = np.arange(0.0,0.08,0.01)
     readlen_range = np.arange(70,130,10)
 
     ranges_dict = {}
     ranges_dict["coverage"] = coverage_range
-    ranges_dict["error_rate"] = error_rate_range
-    ranges_dict["readlen"] = readlen_range
+    # ranges_dict["error_rate"] = error_rate_range
+    # ranges_dict["readlen"] = readlen_range
 
     tools = ["sailfish"]
     for tool_name in tools:
