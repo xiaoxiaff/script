@@ -44,7 +44,9 @@ def plot_accuracy_for_tool(tool_name, plot_type, labels, k_range, accuracy_matri
     
     plt.xticks(tick_index_range, tick_range)
     plt.legend()
+    plt.subplots_adjust(left=0.15)
     plt.savefig(tool_name + "_" + plot_type + "_accuracy_plot")
+    plt.close()
 
 
 def plot_runtime_for_tool(tool_name, plot_type, labels, k_range, runtime_matrix):
@@ -77,7 +79,9 @@ def plot_runtime_for_tool(tool_name, plot_type, labels, k_range, runtime_matrix)
     
     plt.xticks(tick_index_range, tick_range)
     plt.legend()
+    plt.subplots_adjust(left=0.15)
     plt.savefig(tool_name + "_" + plot_type + "_runtime_plot")
+    plt.close()
 
 
 def save_result_matrix_as_csv(tool_name, result_type, loop_type, k_range, loop_range, result_matrix):

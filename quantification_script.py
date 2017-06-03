@@ -281,22 +281,29 @@ def main():
     # readlen_range = np.arange(80,110,10)
 
     ## real ranges
-    k_range = np.arange(11,33,2)
+    k_range = []
     # coverage_range = np.arange(10,50,10)
-    coverage_range = [1,10,20,30,40]
+    coverage_range = [10,20,30,40]
 
     error_rate_range = np.arange(0.0,0.08,0.01)
     readlen_range = np.arange(70,130,10)
 
     ranges_dict = {}
     ranges_dict["coverage"] = coverage_range
-    # ranges_dict["error_rate"] = error_rate_range
-    # ranges_dict["readlen"] = readlen_range
+    ranges_dict["error_rate"] = error_rate_range
+    ranges_dict["readlen"] = readlen_range
 
-    tools = ["sailfish"]
+    tools = ["kallisto", "salmon", "sailfish", "rnaskim"]
     for tool_name in tools:
+        if tool_name == "kallisto":
+            k_range = np.arange(21,32,2)
+        elif tool_name == "sailfish":
+            k_range = np.arange(11,32,2)
+        else:
+            k_range = np.arange(21,76,1)
+
         for loop_type in ranges_dict.keys():
-            run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
+            # run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
             save_result(tool_name,loop_type,k_range,ranges_dict[loop_type])
 
 
