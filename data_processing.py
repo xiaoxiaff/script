@@ -14,10 +14,19 @@ from timeit import timeit
 
 
 def plot_accuracy_for_tool(tool_name, plot_type, labels, k_range, accuracy_matrix):
-    colors = ['r','g','b','y','m','c','k', 'pink']
-    plt.figure()
     n_groups = len(k_range)
     index = np.arange(n_groups)
+
+    tick_range = []
+    tick_index_range = []
+    if(len(k_range)>20):
+        tick_range = k_range[::3]
+        tick_index_range = index[::3]
+    else:
+        tick_range = k_range
+        tick_index_range = index
+    colors = ['r','g','b','y','m','c','k', 'pink']
+    plt.figure()
     axes = plt.gca()
     # axes.set_xlim([xmin,xmax])
     # axes.set_ylim([0,1])
@@ -33,16 +42,26 @@ def plot_accuracy_for_tool(tool_name, plot_type, labels, k_range, accuracy_matri
         label = "{0}={1},bestK={2},accuracy={3:.4f}".format(plot_type,str(labels[i]),str(besk_k),best_accuracy)
         plt.plot(index, current_array, color = colors[i], ls='-', marker='o', label=label)
     
-    plt.xticks(index, k_range)
+    plt.xticks(tick_index_range, tick_range)
     plt.legend()
     plt.savefig(tool_name + "_" + plot_type + "_accuracy_plot")
 
 
 def plot_runtime_for_tool(tool_name, plot_type, labels, k_range, runtime_matrix):
-    colors = ['r','g','b','y','m','c','k', 'pink']
-    plt.figure()
     n_groups = len(k_range)
     index = np.arange(n_groups)
+
+    tick_range = []
+    tick_index_range = []
+    if(len(k_range)>20):
+        tick_range = k_range[::3]
+        tick_index_range = index[::3]
+    else:
+        tick_range = k_range
+        tick_index_range = index
+
+    colors = ['r','g','b','y','m','c','k', 'pink']
+    plt.figure()
     axes = plt.gca()
     # axes.set_xlim([xmin,xmax])
     # axes.set_ylim([0,1])
@@ -56,7 +75,7 @@ def plot_runtime_for_tool(tool_name, plot_type, labels, k_range, runtime_matrix)
         label = "{0}={1}".format(plot_type,str(labels[i]))
         plt.plot(index, current_array, color = colors[i], ls='-', marker='o', label=label)
     
-    plt.xticks(index, k_range)
+    plt.xticks(tick_index_range, tick_range)
     plt.legend()
     plt.savefig(tool_name + "_" + plot_type + "_runtime_plot")
 
