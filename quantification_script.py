@@ -297,10 +297,10 @@ def main():
     for tool_name in tools:
         if tool_name == "kallisto":
             k_range = np.arange(21,32,2)
-        elif tool_name == "sailfish":
-            k_range = np.arange(11,32,2)
-        else:
+        elif tool_name == "rnaskim":
             k_range = np.arange(21,76,1)
+        else:
+            k_range = np.arange(11,32,2)
 
         for loop_type in ranges_dict.keys():
             run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
