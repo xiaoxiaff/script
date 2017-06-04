@@ -295,9 +295,7 @@ def main():
 
     tools = ["kallisto", "rnaskim"]
     for tool_name in tools:
-        if tool_name == "kallisto":
-            k_range = np.arange(21,32,2)
-        elif tool_name == "rnaskim":
+        if tool_name == "rnaskim":
             k_range = np.arange(21,76,1)
         else:
             k_range = np.arange(11,32,2)
