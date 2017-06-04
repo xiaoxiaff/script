@@ -9,11 +9,13 @@ def set_verbose(v):
     verbose = v
 
 
-def build_index(transcriptome_reference_file,index_output_path):
+def build_index(k,transcriptome_reference_file,index_output_path):
     command = "salmon index -t " \
         + transcriptome_reference_file \
         + " -i " \
-        + index_output_path
+        + index_output_path \
+        + " -k " \
+        + str(k)
         
     execute_command(command,verbose)
 
@@ -56,7 +58,7 @@ def get_result_dict(result_dir):
 def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
     time1 = time.time()
 
-    build_index(transcriptome_reference_file, index_output_dir)
+    build_index(k, transcriptome_reference_file, index_output_dir)
 
     res_dict = dict()
     for i in range(1, 11):
