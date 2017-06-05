@@ -88,7 +88,7 @@ def run(k, transcriptome_reference_file, index_dir, sample_dir, output_dir):
     time2 = time.time()
     elapsed_ms = (time2-time1)*1000.0
     
-    return res_dict, elapsed_ms
+    return res_dict, elapsed_ms, dict()
 
 
 # run_sailfish(31, "chr22_small.fa", "test_results/sailfish/index", "simulated_reads", "test_results/sailfish/results")

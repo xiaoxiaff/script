@@ -13,6 +13,7 @@ import datetime
 from timeit import timeit
 from data_processing import plot_accuracy_for_tool
 from data_processing import plot_runtime_for_tool
+from data_processing import plot_duck_for_tool
 from data_processing import save_result_matrix_as_csv
 
 
@@ -95,10 +96,10 @@ def run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_
     print_and_log("quant with {0}, k={1}...".format(tool_name,str(k)))
     tool = __import__(convert_tool_name_to_module_name(tool_name), fromlist=[''])
     tool.set_verbose(verbose)
-    quantificatoin_map, runtime_ms = tool.run(k, transcriptome_reference_file, get_index_dir_by_toolname(tool_name), simulated_reads_dir, get_output_dir_by_toolname(tool_name))
+    quantificatoin_map, runtime_ms, duck_matrix = tool.run(k, transcriptome_reference_file, get_index_dir_by_toolname(tool_name), simulated_reads_dir, get_output_dir_by_toolname(tool_name))
     accuracy = get_average_accuracy(ground_truth_map, quantificatoin_map)
     print_and_log("\t{0}_accuracy={1:f}, runtime(ms)={2:f}".format(tool_name, accuracy, runtime_ms))
-    return accuracy, runtime_ms
+    return accuracy, runtime_ms, duck_matrix
 
 
 def run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, readlen, error_rate, coverage):
@@ -116,16 +117,19 @@ def run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transc
 
     accuracies = []
     runtimes = []
+    ducks = []
     for k in k_range:
         if tool_name=="kallisto" and k>31:
             continue
         if tool_name=="sailfish" and k>31:
             continue
-        accuracy, runtime_ms = run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
+        accuracy, runtime_ms, duck_matrix = run_with_k_for_tool(tool_name, k, ground_truth_map, transcriptome_reference_file, simulated_reads_dir)
         accuracies.append(accuracy) 
         runtimes.append(runtime_ms)
+        ducks.append(duck_matrix)
 
-    return accuracies, runtimes
+
+    return accuracies, runtimes, ducks
 
 
 def get_np_data_file_name(tool_name, loop_type, file_type):
@@ -135,6 +139,7 @@ def get_np_data_file_name(tool_name, loop_type, file_type):
 def run_loop_for_tool(tool_name, loop_type, loop_range, k_range):
     accuracy_matrix = []
     runtime_matrix = []
+    duck_matrix = []
     current_readlen = default_readlen
     current_coverage = default_coverage
     current_error_rate = default_error_rate
@@ -147,63 +152,81 @@ def run_loop_for_tool(tool_name, loop_type, loop_range, k_range):
         elif(loop_type=="readlen"):
             current_readlen = loop_value
 
-        accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, current_readlen, current_error_rate, current_coverage)
+        accuracies, runtimes, ducks = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, current_readlen, current_error_rate, current_coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
+        duck_matrix.append(ducks)
 
     accuracy_np_data_file_name = get_np_data_file_name(tool_name, loop_type, 'accuracy')
     runtime_np_data_file_name = get_np_data_file_name(tool_name, loop_type, 'runtime')
+    duck_np_data_file = get_np_data_file_name(tool_name, loop_type, 'duck')
+
 
     np.save(accuracy_np_data_file_name, accuracy_matrix)
     np.save(runtime_np_data_file_name, runtime_matrix)
+    np.save(duck_np_data_file,duck_matrix)
 
 
 def run_coverage_for_tool(tool_name, coverage_range, k_range):
     accuracy_matrix = []
     runtime_matrix = []
+    duck_matrix = []
 
     for coverage in coverage_range:
-        accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, default_error_rate, coverage)
+        accuracies, runtimes, ducks = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, default_error_rate, coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
+        duck_matrix.append(ducks)
 
     accuracy_np_data_file = get_np_data_file_name(tool_name, 'coverage', 'accuracy')
     runtime_np_data_file = get_np_data_file_name(tool_name, 'coverage', 'runtime')
+    duck_np_data_file = get_np_data_file_name(tool_name, 'coverage', 'duck')
+
 
     np.save(accuracy_np_data_file,accuracy_matrix)
     np.save(runtime_np_data_file,runtime_matrix)
+    np.save(duck_np_data_file,duck_matrix)
 
 
 def run_error_rate_for_tool(tool_name, error_rate_range, k_range):
     accuracy_matrix = []
     runtime_matrix = []
+    duck_matrix = []
     
     for error_rate in error_rate_range:
-        accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, error_rate, default_coverage)
+        accuracies, runtimes, ducks = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, default_readlen, error_rate, default_coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
+        duck_matrix.append(ducks)
 
     accuracy_np_data_file = get_np_data_file_name(tool_name, 'error_rate', 'accuracy')
     runtime_np_data_file = get_np_data_file_name(tool_name, 'error_rate', 'runtime')
+    duck_np_data_file = get_np_data_file_name(tool_name, 'error_rate', 'duck')
+
 
     np.save(accuracy_np_data_file,accuracy_matrix)
     np.save(runtime_np_data_file,runtime_matrix)
+    np.save(duck_np_data_file,duck_matrix)
 
 
 def run_readlen_for_tool(tool_name, readlen_range, k_range):
     accuracy_matrix = []
     runtime_matrix = []
+    duck_matrix = []
     
     for readlen in readlen_range:
-        accuracies, runtimes = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, readlen, default_error_rate, default_coverage)
+        accuracies, runtimes, ducks = run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transcripts, readlen, default_error_rate, default_coverage)
         accuracy_matrix.append(accuracies)
         runtime_matrix.append(runtimes)
+        duck_matrix.append(ducks)
 
     accuracy_np_data_file = get_np_data_file_name(tool_name, 'readlen', 'accuracy')
     runtime_np_data_file = get_np_data_file_name(tool_name, 'readlen', 'runtime')
+    duck_np_data_file = get_np_data_file_name(tool_name, 'readlen', 'duck')
 
     np.save(accuracy_np_data_file,accuracy_matrix)
     np.save(runtime_np_data_file,runtime_matrix)
+    np.save(duck_np_data_file,duck_matrix)
 
 
 def init():
@@ -233,8 +256,8 @@ def init():
     OS = sys.platform
     # mac
     if(OS=="darwin"):
-        project_dir = "/Users/liyuanqi/Google_Drive/UCLA_MSCS/Quarter3/CS229S/Project"
-        simulation_script_path = project_dir + "/simulation_script.R"
+        project_dir = "/Users/jenkins/CS229S_Project/result"
+        simulation_script_path = "/Users/jenkins/CS229S_Project" + "/simulation_script.R"
     #ubuntu
     else:
         project_dir = "/home/ubuntu/cs229"
@@ -261,15 +284,24 @@ def init():
 def save_result(tool_name, loop_type, k_range, loop_range):
     accuracy_np_data_file_name = get_np_data_file_name(tool_name,loop_type,"accuracy")
     runtime_np_data_file = get_np_data_file_name(tool_name,loop_type,"runtime")
+    duck_np_data_file = get_np_data_file_name(tool_name,loop_type,"duck")
     accuracy_matrix = np.load(accuracy_np_data_file_name+'.npy')
     runtime_matrix = np.load(runtime_np_data_file+'.npy')
+    duck_matrix = np.load(duck_np_data_file+'.npy')
+
     while(len(k_range)!=len(accuracy_matrix[0])):
         k_range = np.delete(k_range,len(k_range)-1)
 
+    print (k_range)
+    print (loop_type)
+    print (accuracy_matrix)
+    print (duck_matrix)
     save_result_matrix_as_csv(tool_name,"accuracy",loop_type,k_range,loop_range,accuracy_matrix)
     save_result_matrix_as_csv(tool_name,"runtime",loop_type,k_range,loop_range,runtime_matrix)
+    save_result_matrix_as_csv(tool_name,"duck",loop_type,k_range,loop_range,duck_matrix)
     plot_accuracy_for_tool(tool_name, loop_type, loop_range, k_range, accuracy_matrix)
     plot_runtime_for_tool(tool_name, loop_type, loop_range, k_range, runtime_matrix)
+    plot_duck_for_tool(tool_name, loop_type, loop_range, k_range, duck_matrix)
 
 
 def main():
@@ -283,10 +315,10 @@ def main():
     ## real ranges
     k_range = []
     # coverage_range = np.arange(10,50,10)
-    coverage_range = [1,10,20,30,40]
+    coverage_range = [10]
 
-    error_rate_range = np.arange(0.0,0.08,0.01)
-    readlen_range = np.arange(70,130,10)
+    error_rate_range = np.arange(0.01,0.02,0.01)
+    readlen_range = np.arange(70,80,10)
 
     ranges_dict = {}
     # ranges_dict["coverage"] = coverage_range

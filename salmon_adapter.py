@@ -1,6 +1,7 @@
 from general_utils import execute_command
 import numpy as np
 import time
+import os
 
 
 verbose = False
@@ -9,7 +10,7 @@ def set_verbose(v):
     verbose = v
 
 
-def build_index(k,transcriptome_reference_file,index_output_path):
+def build_index(k, transcriptome_reference_file,index_output_path):
     command = "salmon index -t " \
         + transcriptome_reference_file \
         + " -i " \
@@ -58,7 +59,25 @@ def get_result_dict(result_dir):
 def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
     time1 = time.time()
 
+    if os.path.isfile(index_output_dir + "/duck.log"):
+        os.remove(index_output_dir + "/duck.log")
     build_index(k, transcriptome_reference_file, index_output_dir)
+
+    f = open(index_output_dir + '/duck.log', "r+")
+
+    duck_dict = dict()
+    f.readline()
+    f.readline()
+    duckOutput = f.readline()
+    print(duckOutput)
+    uki = duckOutput.index("unique kmer");
+    invalidt = duckOutput.index("invalid time");
+    khs = duckOutput.index("khash size");
+    duck_dict['uniqueKmer'] = duckOutput[uki+13:invalidt-2]
+    duck_dict['invalidTime'] = duckOutput[invalidt+14:khs-2]
+    duck_dict['khashSize'] = duckOutput[khs+12:-1]
+
+    print(duck_dict)
 
     res_dict = dict()
     for i in range(1, 11):
@@ -84,8 +103,11 @@ def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_di
 
     time2 = time.time()
     elapsed_ms = (time2-time1)*1000.0
+
+    print(res_dict)
+    print(duck_dict)
     
-    return res_dict, elapsed_ms
+    return res_dict, elapsed_ms, duck_dict
 
 
 # run_salmon(31, "chr22_small.fa", "test_results/salmon/index", "simulated_reads", "test_results/salmon/quant_results")

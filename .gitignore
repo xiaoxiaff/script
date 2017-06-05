@@ -19,6 +19,7 @@ sailfish
 .Rhistory
 num_of_reads.txt
 transcript_names.txt
+chr22_small.fa
 
 *.png
 
@@ -27,3 +28,10 @@ np_data
 ec2_results
 result
 result.zip
+kallisto_accuracy_*
+kallisto_duck_*
+kallisto_runtime_*
+salmon_accuracy_*
+salmon_duck_*
+salmon_runtime_*
+test.txt

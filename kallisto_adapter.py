@@ -1,6 +1,7 @@
 from general_utils import execute_command
 import numpy as np
 import time
+import os
 # https://pachterlab.github.io/kallisto/manual
 
 
@@ -55,7 +56,21 @@ def get_result_dict(result_dir):
 def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_dir):
     time1 = time.time()
 
+    if os.path.isfile(index_output_dir[:index_output_dir.rfind('/')]  + '/duck.log'):
+        os.remove(index_output_dir[:index_output_dir.rfind('/')]  + '/duck.log')
+
     build_index_with_k(transcriptome_reference_file, k, index_output_dir)
+
+    f = open(index_output_dir[:index_output_dir.rfind('/')]  + '/duck.log', "r+")
+
+    duck_dict = dict()
+    duckOutput = f.readline()
+    print(duckOutput)
+    kindex = duckOutput.index("kmers:");
+    cindex = duckOutput.index("contigs:");
+    duck_dict['kmers'] = duckOutput[kindex+6:cindex-2]
+    duck_dict['contigs'] = duckOutput[cindex+8:-1]
+    print(duck_dict)
 
     res_dict = dict()
     for i in range(1, 11):
@@ -82,8 +97,7 @@ def run(k, transcriptome_reference_file, index_output_dir, sample_dir, output_di
     time2 = time.time()
     elapsed_ms = (time2-time1)*1000.0
     
-    return res_dict, elapsed_ms
-
+    return res_dict, elapsed_ms, duck_dict
 
 # run_kallisto(31, "chr22_small.fa", "test_results/kallisto/index", "simulated_reads", "test_results/kallisto/quant_results")
 
