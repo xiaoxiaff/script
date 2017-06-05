@@ -289,11 +289,11 @@ def main():
     readlen_range = np.arange(70,130,10)
 
     ranges_dict = {}
-    ranges_dict["coverage"] = coverage_range
-    # ranges_dict["error_rate"] = error_rate_range
-    # ranges_dict["readlen"] = readlen_range
+    # ranges_dict["coverage"] = coverage_range
+    ranges_dict["error_rate"] = error_rate_range
+    ranges_dict["readlen"] = readlen_range
 
-    tools = ["kallisto", "rnaskim"]
+    tools = ["kallisto"]
     for tool_name in tools:
         if tool_name == "rnaskim":
             k_range = np.arange(21,76,1)
