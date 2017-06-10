@@ -52,6 +52,7 @@ def remove_gene_id_from_map(old_map):
     #print("old_map:")
     #print(old_map)
     new_map = {}
+    print(old_map)
     for (key,value) in old_map.items():
         key_array = key.decode("utf-8").split("|")
         new_key = ""
@@ -75,11 +76,12 @@ def get_average_accuracy(ground_truth_map, quantification_map):
     #print("truth map:,len=\n"+str(len(ground_truth_map)))
     #print(ground_truth_map.items())
     #print("quant map:\n")
-    #print(quantification_map.items())
+    print(quantification_map)
+    print(ground_truth_map)
     for (key,ground_truth_value) in ground_truth_map.items():
-        #print("key:\n")
-        #print(key)
-        #print(ground_truth_map.keys())
+        print("key:\n")
+        print(key)
+        print(ground_truth_map.keys())
 
 
         quantification_value = quantification_map[key]

@@ -231,7 +231,7 @@ def run_readlen_for_tool(tool_name, readlen_range, k_range):
 
 def init():
     parser = OptionParser()
-    parser.add_option("-t", "--transcript", dest="number_of_transcripts", default=10,
+    parser.add_option("-t", "--transcript", dest="number_of_transcripts", default=910,
         action="store", type="int",
         help="int, number of transcripts to use in the simulation")
 
@@ -292,10 +292,6 @@ def save_result(tool_name, loop_type, k_range, loop_range):
     while(len(k_range)!=len(accuracy_matrix[0])):
         k_range = np.delete(k_range,len(k_range)-1)
 
-    print (k_range)
-    print (loop_type)
-    print (accuracy_matrix)
-    print (duck_matrix)
     save_result_matrix_as_csv(tool_name,"accuracy",loop_type,k_range,loop_range,accuracy_matrix)
     save_result_matrix_as_csv(tool_name,"runtime",loop_type,k_range,loop_range,runtime_matrix)
     save_result_matrix_as_csv(tool_name,"duck",loop_type,k_range,loop_range,duck_matrix)
@@ -323,14 +319,14 @@ def main():
     ranges_dict = {}
     # ranges_dict["coverage"] = coverage_range
     ranges_dict["error_rate"] = error_rate_range
-    ranges_dict["readlen"] = readlen_range
+    #ranges_dict["readlen"] = readlen_range
 
-    tools = ["kallisto"]
+    tools = ["salmon"]
     for tool_name in tools:
         if tool_name == "rnaskim":
             k_range = np.arange(21,76,1)
         else:
-            k_range = np.arange(11,32,2)
+            k_range = np.arange(5,32,2)
 
         for loop_type in ranges_dict.keys():
             run_loop_for_tool(tool_name, loop_type, ranges_dict[loop_type], k_range)
