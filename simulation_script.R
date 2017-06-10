@@ -56,6 +56,8 @@ lapply(readspertx, write, paste(outdir,"/num_of_reads.txt",sep=""), append=TRUE)
 
 fold_changes = matrix(c(rep(1,number_of_transcripts),rep(1,number_of_transcripts)), nrow=number_of_transcripts)
 
+fold_changes
+count_transcripts(small_fasta_file_location)
 # simulation call:
 simulate_experiment(small_fasta_file_location,
                     reads_per_transcript=readspertx,

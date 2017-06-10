@@ -129,6 +129,31 @@ def plot_duck_for_tool(tool_name, plot_type, labels, k_range, duck_matrix):
                 plt.savefig(tool_name + "_" + plot_type + "_contigs_plot")
             plt.close()
 
+    if tool_name == "sailfish":
+        attrList = ['transcriptHashSize','numOfTranscript','numOfGene', 'numOfKmers', 'numOfEquivClass', 'transcriptForKmerTableSize']
+        for seq in range(len(attrList)):
+            plt.figure()
+            axes = plt.gca()
+            # axes.set_xlim([xmin,xmax])
+            # axes.set_ylim([0,1])
+            plt.xlabel('k value')
+
+            plot_title = "{0}, {1}".format(tool_name, attrList[seq])
+            
+            plt.title(plot_title)
+            current_array = duck_matrix[0]
+            result_array = []
+            for item in current_array:
+                result_array.append(item[attrList[seq]])
+            label = "{0}".format(tool_name)
+            plt.plot(index, result_array, color = colors[0], ls='-', marker='o', label=label)
+           
+            plt.xticks(tick_index_range, tick_range)
+            plt.legend()
+            plt.subplots_adjust(left=0.15)
+            plt.savefig(tool_name + "_" + attrList[seq] + "_plot")
+            plt.close()
+
 
 def plot_runtime_for_tool(tool_name, plot_type, labels, k_range, runtime_matrix):
     n_groups = len(k_range)

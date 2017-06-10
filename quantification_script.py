@@ -112,7 +112,8 @@ def run_with_simulation_parameters_for_tool(tool_name, k_range, number_of_transc
     print_and_log('{:>30}  {:>8}'.format('error_rate:', str(error_rate)))
     print_and_log('{:>30}  {:>8}'.format('coverage:', str(coverage)))
     ground_truth_map = simulate_reads(simulation_script_path, number_of_transcripts, readlen, error_rate, coverage, project_dir)
-    print_and_log('{:>30}  {:>8}'.format('Total Number of Reads:', str(sum(ground_truth_map.values()))))
+    #print_and_log('{:>30}  {:>8}'.format('Total Number of Reads:', str(sum(ground_truth_map.values()))))
+    #ground_truth_map = {}
     print_and_log("")
 
     accuracies = []
@@ -231,7 +232,7 @@ def run_readlen_for_tool(tool_name, readlen_range, k_range):
 
 def init():
     parser = OptionParser()
-    parser.add_option("-t", "--transcript", dest="number_of_transcripts", default=10,
+    parser.add_option("-t", "--transcript", dest="number_of_transcripts", default=100,
         action="store", type="int",
         help="int, number of transcripts to use in the simulation")
 
@@ -256,12 +257,12 @@ def init():
     OS = sys.platform
     # mac
     if(OS=="darwin"):
-        project_dir = "/Users/jenkins/CS229S_Project/result"
-        simulation_script_path = "/Users/jenkins/CS229S_Project" + "/simulation_script.R"
+        project_dir = "/home/stumble/script/result"
+        simulation_script_path = "/home/stumble/script/simulation_script.R"
     #ubuntu
     else:
-        project_dir = "/home/ubuntu/cs229"
-        simulation_script_path = project_dir + "/CS229S_Project/simulation_script.R"
+        project_dir = "/home/stumble/script/result"
+        simulation_script_path = "/home/stumble/script/simulation_script.R"
 
     transcriptome_reference_file = project_dir + "/chr22_small.fa"
     simulated_reads_dir = project_dir + "/simulated_reads"
@@ -323,9 +324,8 @@ def main():
     ranges_dict = {}
     # ranges_dict["coverage"] = coverage_range
     ranges_dict["error_rate"] = error_rate_range
-    ranges_dict["readlen"] = readlen_range
 
-    tools = ["kallisto"]
+    tools = ["sailfish"]
     for tool_name in tools:
         if tool_name == "rnaskim":
             k_range = np.arange(21,76,1)
